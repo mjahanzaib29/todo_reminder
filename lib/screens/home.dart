@@ -17,20 +17,28 @@ class _HomeState extends State<Home> {
     String formattedDate = formatter.format(now);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         automaticallyImplyLeading: false,
-        title: Center(
-            child: Text(
+        leading:IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: Colors.red,
+            ),
+            onPressed: () {}) ,
+        title: Text(
           StringConstants.title,
-          style: Pallete.kheading,
-        )),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
-              onPressed: () {})
-        ],
+          style: TextStyle(color: Pallete.bgColor ,fontSize: 25,fontWeight: FontWeight.bold),
+        ),
+        // actions: [
+        //   IconButton(
+        //       icon: Icon(
+        //         Icons.logout,
+        //         color: Colors.red,
+        //       ),
+        //       onPressed: () {})
+        // ],
       ),
       body: Align(
         alignment: Alignment.center,
