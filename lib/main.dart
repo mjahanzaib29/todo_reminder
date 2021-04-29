@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/screens/sign_up.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch:Pallete.mbgcolor,
       ),
       home: SignUp(),
     );
