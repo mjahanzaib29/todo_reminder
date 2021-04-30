@@ -80,7 +80,8 @@ class _HomeState extends State<Home> {
                   child: Column(
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RotatedBox(
                             quarterTurns: 3,
@@ -132,24 +133,34 @@ class _HomeState extends State<Home> {
                             child: TextField(
                               enabled: false,
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.calendar_today),
+                                prefixIcon: Icon(Icons.access_time),
                                 labelStyle: Pallete.khint,
                                 labelText: finaldatewithyear == null
-                                    ? 'Schedule'
+                                    ? 'Time'
                                     : finaldatewithyear,
                               ),
                             ),
                           ),
                           TextButton(
                             onPressed: () => _selectTime(context),
-                            child: Text('PickDate'),
+                            child: Text('PickTime'),
                           ),
                         ],
                       ),
                       Row(
                         children: [
+                          Expanded(
+                            child: TextField(
+                              enabled: false,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.category),
+                                  labelStyle: Pallete.khint,
+                                  labelText: 'Category'),
+                            ),
+                          ),
                           DropdownButton<String>(
-                            items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                            items: <String>['A', 'B', 'C', 'D']
+                                .map((String value) {
                               return new DropdownMenuItem<String>(
                                 value: value,
                                 child: new Text(value),
@@ -158,7 +169,24 @@ class _HomeState extends State<Home> {
                             onChanged: (_) {},
                           ),
                         ],
-                      )
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        width: size.width,
+                        decoration: new BoxDecoration(
+                          border: Border.all(
+                            color: Pallete.bgColor,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        ),
+                        child: TextButton(
+                          child: new Text(
+                            'Add Task',
+                            style: Pallete.kbtn2,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
                     ],
                   ),
                 ),

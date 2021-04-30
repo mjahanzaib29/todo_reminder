@@ -43,6 +43,12 @@ class Pallete {
     color: Colors.white,
     fontWeight: FontWeight.bold,
   );
+  static const kbtn2 = TextStyle(
+    fontSize: 20,
+    fontFamily: 'Poppins',
+    color: bgColor,
+    fontWeight: FontWeight.bold,
+  );
   static const knavunselected = TextStyle(
     fontSize: 15,
     fontFamily: 'Poppins',
