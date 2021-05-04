@@ -130,10 +130,10 @@ class _SignUpState extends State<SignUp> {
                             child: RichText(
                               text: TextSpan(children: [
                                 TextSpan(
-                                    text: "Dont't have an account yet ?",
+                                    text: "Already have an account?",
                                     style: Pallete.khint),
                                 TextSpan(
-                                    text: "Sign Up ", style: Pallete.kpopbtn)
+                                    text: "Sign In ", style: Pallete.kpopbtn)
                               ]),
                             ),
                             onTap: () {
