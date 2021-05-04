@@ -16,6 +16,9 @@ class _SignUpState extends State<SignUp> {
       TextEditingController();
   final TextEditingController _rpasswordTextEditingController =
       TextEditingController();
+  final String documentId;
+
+  _SignUpState(this.documentId);
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +81,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _rusernameTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
                                   Icons.person,
@@ -95,6 +99,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _remailTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email),
                                 labelStyle: Pallete.khint,
@@ -110,6 +115,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _rpasswordTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),
                                 labelStyle: Pallete.khint,
@@ -187,6 +193,7 @@ class _SignUpState extends State<SignUp> {
       "Email": _remailTextEditingController.text.toString(),
       "Password": _rpasswordTextEditingController.text.toString(),
       "User_Name": _rusernameTextEditingController.text.toString(),
+      "Id": FirebaseFirestore.instance.collection("users").doc(documentId).get()
     });
   }
 }
