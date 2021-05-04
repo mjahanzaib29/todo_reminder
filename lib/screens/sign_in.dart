@@ -8,6 +8,12 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -69,6 +75,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _emailTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email),
                                 labelStyle: Pallete.khint,
@@ -84,6 +91,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _passwordTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),
                                 labelStyle: Pallete.khint,
@@ -107,11 +115,23 @@ class _SignInState extends State<SignIn> {
                                 style: Pallete.kbtn,
                               ),
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Homepage(),
-                                    ));
+                                _emailTextEditingController.text.isNotEmpty &&
+                                        _passwordTextEditingController
+                                            .text.isNotEmpty
+                                    ? loginUser()
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) => Homepage(),
+                                    //     ))
+                                    : showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Fill all fields"),
+                                          );
+                                        },
+                                      );
                               },
                             ),
                           ),
@@ -139,6 +159,15 @@ class _SignInState extends State<SignIn> {
           ),
         ),
       ),
+    );
+  }
+
+  void loginUser() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog();
+      },
     );
   }
 }

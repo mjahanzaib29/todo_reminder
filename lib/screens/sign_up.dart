@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/screens/sign_in.dart';
@@ -8,6 +10,13 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final TextEditingController _rusernameTextEditingController =
+      TextEditingController();
+  final TextEditingController _remailTextEditingController =
+      TextEditingController();
+  final TextEditingController _rpasswordTextEditingController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -123,7 +132,23 @@ class _SignUpState extends State<SignUp> {
                                 'SIGN UP',
                                 style: Pallete.kbtn,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _rusernameTextEditingController
+                                            .text.isNotEmpty &&
+                                        _remailTextEditingController
+                                            .text.isNotEmpty &&
+                                        _rpasswordTextEditingController
+                                            .text.isNotEmpty
+                                    ? registerUser()
+                                    : showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Fill all fields"),
+                                          );
+                                        },
+                                      );
+                              },
                             ),
                           ),
                           InkWell(
@@ -155,5 +180,13 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  void registerUser() async {
+    FirebaseFirestore.instance.collection("users").add({
+      "Email": _remailTextEditingController.text.toString(),
+      "Password": _rpasswordTextEditingController.text.toString(),
+      "User_Name": _rusernameTextEditingController.text.toString(),
+    });
   }
 }
