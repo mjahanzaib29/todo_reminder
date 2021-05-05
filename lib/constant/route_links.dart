@@ -6,7 +6,7 @@ import 'package:todo_reminder/screens/task.dart';
 class RouteLinks {
   static List<Widget> routelinks = [
     Home(),
-    Categories_page(),
     TaskPage(),
+    Categories_page(),
   ];
 }

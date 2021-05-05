@@ -115,23 +115,11 @@ class _SignInState extends State<SignIn> {
                                 style: Pallete.kbtn,
                               ),
                               onPressed: () {
-                                _emailTextEditingController.text.isNotEmpty &&
-                                        _passwordTextEditingController
-                                            .text.isNotEmpty
-                                    ? loginUser()
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => Homepage(),
-                                    //     ))
-                                    : showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text("Fill all fields"),
-                                          );
-                                        },
-                                      );
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Homepage(),
+                                    ));
                               },
                             ),
                           ),

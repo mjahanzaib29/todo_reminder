@@ -11,18 +11,20 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final TextEditingController _rusernameTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _remailTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _rpasswordTextEditingController =
-      TextEditingController();
-  final String documentId;
+  TextEditingController();
+  final String docId;
 
-  _SignUpState(this.documentId);
+  _SignUpState({this.docId});
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -36,7 +38,7 @@ class _SignUpState extends State<SignUp> {
                   decoration: BoxDecoration(
                     color: Pallete.bgColor,
                     borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(90.0)),
+                    BorderRadius.vertical(bottom: Radius.circular(90.0)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -79,7 +81,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _rusernameTextEditingController,
                               decoration: InputDecoration(
@@ -97,7 +99,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _remailTextEditingController,
                               decoration: InputDecoration(
@@ -113,7 +115,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _rpasswordTextEditingController,
                               decoration: InputDecoration(
@@ -131,7 +133,7 @@ class _SignUpState extends State<SignUp> {
                             decoration: new BoxDecoration(
                               color: Pallete.bgColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(50.0)),
+                              BorderRadius.all(Radius.circular(50.0)),
                             ),
                             child: TextButton(
                               child: new Text(
@@ -140,20 +142,20 @@ class _SignUpState extends State<SignUp> {
                               ),
                               onPressed: () {
                                 _rusernameTextEditingController
-                                            .text.isNotEmpty &&
-                                        _remailTextEditingController
-                                            .text.isNotEmpty &&
-                                        _rpasswordTextEditingController
-                                            .text.isNotEmpty
+                                    .text.isNotEmpty &&
+                                    _remailTextEditingController
+                                        .text.isNotEmpty &&
+                                    _rpasswordTextEditingController
+                                        .text.isNotEmpty
                                     ? registerUser()
                                     : showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text("Fill all fields"),
-                                          );
-                                        },
-                                      );
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text("Fill all fields"),
+                                    );
+                                  },
+                                );
                               },
                             ),
                           ),
@@ -189,11 +191,27 @@ class _SignUpState extends State<SignUp> {
   }
 
   void registerUser() async {
+    // StreamBuilder(
+    //     stream: FirebaseFirestore.instance
+    //         .collection('YOUR COLLECTION NAME')
+    //         .doc(docId) //ID OF DOCUMENT
+    //         .snapshots(),
+    //     builder: (context, snapshot) {
+    //       if (!snapshot.hasData) {
+    //         return new CircularProgressIndicator();
+    //       }
+    //       var document = snapshot.data;
+    //       return new Text(document["name"]);
+    //     }
+    // );
+
+    // QuerySnapshot querySnapshot ;
+    // var id = querySnapshot.docs[].id;
     FirebaseFirestore.instance.collection("users").add({
-      "Email": _remailTextEditingController.text.toString(),
-      "Password": _rpasswordTextEditingController.text.toString(),
-      "User_Name": _rusernameTextEditingController.text.toString(),
-      "Id": FirebaseFirestore.instance.collection("users").doc(documentId).get()
+    "Email": _remailTextEditingController.text.toString(),
+    "Password": _rpasswordTextEditingController.text.toString(),
+    "User_Name": _rusernameTextEditingController.text.toString(),
+    // "Id": FirebaseFirestore.instance.collection("users").doc(docId).id
     });
   }
 }
