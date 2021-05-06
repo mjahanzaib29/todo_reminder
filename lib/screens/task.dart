@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:logger/logger.dart';
+import 'dart:io';
 
 class TaskPage extends StatefulWidget {
   @override
@@ -14,13 +15,26 @@ class _TaskPageState extends State<TaskPage> {
   var scode;
   final String baseurl = "https://rocky-brushlands-19286.herokuapp.com";
   final String endpoint = "/user/login";
+  final client = new HttpClient();
+  String query =
+      '{"email" :"mohammadnabeeljameel@gmail.com", "password": "asdsasdfsdf" , "name": "Nabeel" }';
   String data;
+  var resbody, code;
 
   Future<String> getSwdata() async {
-    var res = await http.post(Uri.parse(baseurl),
-        headers: {"Accept": "application/json;charset=utf-8"});
+    final req = await client.getUrl(Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"));
+    final rspns = await req.close();
+    print(rspns.statusCode);
+    debugPrint(rspns.statusCode.toString());
+    var res = await http.post(Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(query)
+    );
     setState(() {
-      var resbody = json.decode(res.body);
+      resbody = json.decode(res.body);
+      code = res.statusCode;
       print('response from db' + resbody.toString());
       debugPrint('debugresponse from db' + resbody.toString());
       log.v('debugresponse from db' + resbody.toString());
@@ -66,7 +80,7 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text(data == null ? "" : data),
+      child: Center(child: Text(resbody.toString() + code.toString())),
     );
   }
 }
