@@ -104,7 +104,7 @@ class _SignUpState extends State<SignUp> {
                             child: TextField(
                               controller: _upemailTextEditingController,
                               decoration: InputDecoration(
-                                helperText: errorText == null ? '':errorText,
+                                helperText: errorText == null ? null:errorText,
                                 prefixIcon: Icon(Icons.email),
                                 labelStyle: Pallete.khint,
                                 labelText: "Email",
@@ -121,7 +121,7 @@ class _SignUpState extends State<SignUp> {
                             child: TextField(
                               controller: _uppasswordTextEditingController,
                               decoration: InputDecoration(
-                                helperText: errorText == null ? '':errorText,
+                                helperText: errorText == null ? null:errorText,
                                 prefixIcon: Icon(Icons.lock),
                                 labelStyle: Pallete.khint,
                                 labelText: "Password",

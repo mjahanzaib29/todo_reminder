@@ -6,8 +6,6 @@ import 'package:logger/logger.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'dart:io';
 
-import 'package:todo_reminder/model/networkhandler.dart';
-
 class TaskPage extends StatefulWidget {
   @override
   _TaskPageState createState() => _TaskPageState();
@@ -103,15 +101,15 @@ class _TaskPageState extends State<TaskPage> {
 
             ),
             onPressed: () {
-          try {
-            NetworkHandler().loginUser().then((String result) {
-              setState(() {
-                result = sometext;
-              });
-            });
-          } catch (e) {
-            Exception exception;
-          }
+          // try {
+          //   NetworkHandler().loginUser().then((String result) {
+          //     setState(() {
+          //       result = sometext;
+          //     });
+          //   });
+          // } catch (e) {
+          //   Exception exception;
+          // }
             },
           ),
         ],

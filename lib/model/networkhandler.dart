@@ -26,9 +26,9 @@ class NetworkHandler {
   //   return "Success";
   // }
 
-  Future<dynamic> loginUser(Map<String, String> body) async {
+  Future loginUser(Map<String, String> body) async {
     var url =
-    Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/login');
+        Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/login');
     var response = await http.post(url, body: body);
     Map output = convert.jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -38,7 +38,7 @@ class NetworkHandler {
       }
 
       print(response.body + response.statusCode.toString());
-      return output['message'];
+      return output['token'];
     }
     {
       print("statusccod is not 200");
@@ -46,6 +46,7 @@ class NetworkHandler {
       return output['error'];
     }
   }
+
   Future<dynamic> register(Map<String, String> body) async {
     var url =
         Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/signup');

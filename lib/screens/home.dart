@@ -57,137 +57,143 @@ class _HomeState extends State<Home> {
         alignment: Alignment.center,
         child: Column(
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
-              child: Container(
-                height: size.height * .73,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Pallete.bgColor.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
+            Expanded(
+              child: SingleChildScrollView(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RotatedBox(
-                            quarterTurns: 3,
-                            child: Text(
-                              currentday,
-                              style: GoogleFonts.dancingScript(fontSize: 45),
-                            ),
-                          ),
-                          Text(
-                            formattedDate,
-                            style: GoogleFonts.montserrat(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.notes),
-                          labelStyle: Pallete.khint,
-                          labelText: "Remind me for",
+                      const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
+                  child: Container(
+                    height: size.height * .73,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Pallete.bgColor.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
                         ),
-                      ),
-                      Row(
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: TextField(
-                              enabled: false,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.calendar_today),
-                                labelStyle: Pallete.khint,
-                                labelText: finaldatewithyear == null
-                                    ? 'Schedule'
-                                    : finaldatewithyear,
-                                // hintText: finaldatewithyear,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RotatedBox(
+                                quarterTurns: 3,
+                                child: Text(
+                                  currentday,
+                                  style:
+                                      GoogleFonts.dancingScript(fontSize: 45),
+                                ),
                               ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => _selectDate(context),
-                            child: Text('PickDate'),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              enabled: false,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.access_time),
-                                labelStyle: Pallete.khint,
-                                labelText: finaldatewithyear == null
-                                    ? 'Time'
-                                    : finaldatewithyear,
+                              Text(
+                                formattedDate,
+                                style: GoogleFonts.montserrat(fontSize: 20),
                               ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.notes),
+                              labelStyle: Pallete.khint,
+                              labelText: "Remind me for",
                             ),
                           ),
-                          TextButton(
-                            onPressed: () => _selectTime(context),
-                            child: Text('PickTime'),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.calendar_today),
+                                    labelStyle: Pallete.khint,
+                                    labelText: finaldatewithyear == null
+                                        ? 'Schedule'
+                                        : finaldatewithyear,
+                                    // hintText: finaldatewithyear,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => _selectDate(context),
+                                child: Text('PickDate'),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.access_time),
+                                    labelStyle: Pallete.khint,
+                                    labelText: finaldatewithyear == null
+                                        ? 'Time'
+                                        : finaldatewithyear,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => _selectTime(context),
+                                child: Text('PickTime'),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.category),
+                                      labelStyle: Pallete.khint,
+                                      labelText: 'Category'),
+                                ),
+                              ),
+                              DropdownButton<String>(
+                                items: <String>['A', 'B', 'C', 'D']
+                                    .map((String value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (_) {},
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 15),
+                            width: size.width,
+                            decoration: new BoxDecoration(
+                              border: Border.all(
+                                color: Pallete.bgColor,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0)),
+                            ),
+                            child: TextButton(
+                              child: new Text(
+                                'Add Task',
+                                style: Pallete.kbtn2,
+                              ),
+                              onPressed: () {},
+                            ),
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              enabled: false,
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.category),
-                                  labelStyle: Pallete.khint,
-                                  labelText: 'Category'),
-                            ),
-                          ),
-                          DropdownButton<String>(
-                            items: <String>['A', 'B', 'C', 'D']
-                                .map((String value) {
-                              return new DropdownMenuItem<String>(
-                                value: value,
-                                child: new Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (_) {},
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 15),
-                        width: size.width,
-                        decoration: new BoxDecoration(
-                          border: Border.all(
-                            color: Pallete.bgColor,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                        ),
-                        child: TextButton(
-                          child: new Text(
-                            'Add Task',
-                            style: Pallete.kbtn2,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

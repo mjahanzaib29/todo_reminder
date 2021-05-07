@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_reminder/constant/pallete.dart';
+import 'package:todo_reminder/model/networkhandler.dart';
 import 'package:todo_reminder/screens/home_page.dart';
 
 class SignIn extends StatefulWidget {
@@ -8,13 +9,17 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final TextEditingController _emailTextEditingController =
+  final TextEditingController _semailTextEditingController =
       TextEditingController();
-  final TextEditingController _passwordTextEditingController =
+  final TextEditingController _spasswordTextEditingController =
       TextEditingController();
+  final TextEditingController _snameTextEditingController =
+      TextEditingController();
+  String errorText, successText;
 
   @override
   Widget build(BuildContext context) {
+    NetworkHandler networkHandler = NetworkHandler();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
@@ -74,6 +79,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              controller: _snameTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
                                   Icons.person,
@@ -91,7 +97,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _emailTextEditingController,
+                              controller: _semailTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email),
                                 labelStyle: Pallete.khint,
@@ -107,7 +113,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                         BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _passwordTextEditingController,
+                              controller: _spasswordTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),
                                 labelStyle: Pallete.khint,
@@ -130,12 +136,28 @@ class _SignInState extends State<SignIn> {
                                 'SIGN IN',
                                 style: Pallete.kbtn,
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Homepage(),
-                                    ));
+                              onPressed: () async {
+                                Map<String, String> loginData = {
+                                  "email": _semailTextEditingController.text,
+                                  "password":
+                                      _spasswordTextEditingController.text,
+                                  "name": _snameTextEditingController.text,
+                                };
+                                print(loginData);
+                                await networkHandler
+                                    .loginUser(loginData)
+                                    .then((dynamic message) {
+                                  setState(() {
+                                    errorText = message;
+                                    if (errorText != null) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Homepage(),
+                                          ));
+                                    }
+                                  });
+                                });
                               },
                             ),
                           ),
