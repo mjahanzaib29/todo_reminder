@@ -104,7 +104,7 @@ class _TaskPageState extends State<TaskPage> {
             ),
             onPressed: () {
           try {
-            NetworkHandler().getSwdata().then((String result) {
+            NetworkHandler().loginUser().then((String result) {
               setState(() {
                 result = sometext;
               });

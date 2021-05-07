@@ -8,7 +8,6 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailTextEditingController =
       TextEditingController();
   final TextEditingController _passwordTextEditingController =
@@ -69,6 +68,23 @@ class _SignInState extends State<SignIn> {
                       padding: const EdgeInsets.all(15.0),
                       child: Column(
                         children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom:
+                                        BorderSide(color: Colors.grey[400]))),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.person,
+                                ),
+                                labelStyle: Pallete.khint,
+                                labelText: "User Name",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
                           Container(
                             decoration: BoxDecoration(
                                 border: Border(

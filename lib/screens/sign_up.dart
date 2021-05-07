@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_reminder/constant/pallete.dart';
+import 'package:todo_reminder/model/networkhandler.dart';
+import 'package:todo_reminder/screens/home_page.dart';
 import 'package:todo_reminder/screens/sign_in.dart';
 
 class SignUp extends StatefulWidget {
@@ -10,13 +12,15 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final TextEditingController _rusernameTextEditingController =
+  NetworkHandler networkHandler = NetworkHandler();
+  final TextEditingController _upusernameTextEditingController =
   TextEditingController();
-  final TextEditingController _remailTextEditingController =
+  final TextEditingController _upemailTextEditingController =
   TextEditingController();
-  final TextEditingController _rpasswordTextEditingController =
+  final TextEditingController _uppasswordTextEditingController =
   TextEditingController();
   final String docId;
+  String errorText, successText;
 
   _SignUpState({this.docId});
 
@@ -32,33 +36,30 @@ class _SignUpState extends State<SignUp> {
           child: Stack(
             children: [
               Positioned(
-                child: Container(
-                  width: size.width,
-                  height: size.height * .5,
-                  decoration: BoxDecoration(
-                    color: Pallete.bgColor,
-                    borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(90.0)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 60, horizontal: 10),
-                    child: Column(
-                      children: [
-                        Text(
-                          "New Here ?",
-                          style: Pallete.kheading,
-                        ),
-                        Text(
-                          "Enter your personal details and start journey with us!",
-                          style: Pallete.kpara,
-                          textAlign: TextAlign.center,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                  child: Container(
+                      width: size.width,
+                      height: size.height * .5,
+                      decoration: BoxDecoration(
+                        color: Pallete.bgColor,
+                        borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(90.0)),
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 60, horizontal: 10),
+                          child: Column(
+                            children: [
+                              Text(
+                                "New Here ?",
+                                style: Pallete.kheading,
+                              ),
+                              Text(
+                                "Enter your personal details and start journey with us!",
+                                style: Pallete.kpara,
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          )))),
               Positioned.fill(
                 top: size.height * .2,
                 child: Align(
@@ -83,7 +84,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _rusernameTextEditingController,
+                              controller: _upusernameTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
                                   Icons.person,
@@ -101,8 +102,9 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _remailTextEditingController,
+                              controller: _upemailTextEditingController,
                               decoration: InputDecoration(
+                                helperText: errorText == null ? '':errorText,
                                 prefixIcon: Icon(Icons.email),
                                 labelStyle: Pallete.khint,
                                 labelText: "Email",
@@ -117,8 +119,9 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _rpasswordTextEditingController,
+                              controller: _uppasswordTextEditingController,
                               decoration: InputDecoration(
+                                helperText: errorText == null ? '':errorText,
                                 prefixIcon: Icon(Icons.lock),
                                 labelStyle: Pallete.khint,
                                 labelText: "Password",
@@ -140,22 +143,29 @@ class _SignUpState extends State<SignUp> {
                                 'SIGN UP',
                                 style: Pallete.kbtn,
                               ),
-                              onPressed: () {
-                                _rusernameTextEditingController
-                                    .text.isNotEmpty &&
-                                    _remailTextEditingController
-                                        .text.isNotEmpty &&
-                                    _rpasswordTextEditingController
-                                        .text.isNotEmpty
-                                    ? registerUser()
-                                    : showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text("Fill all fields"),
-                                    );
-                                  },
-                                );
+                              onPressed: () async {
+                                Map<String, String> signUpData = {
+                                  "email": _upemailTextEditingController.text,
+                                  "password":
+                                  _uppasswordTextEditingController.text,
+                                  "name": _upusernameTextEditingController.text,
+                                };
+                                //User Create successful
+                                print(signUpData);
+                                await networkHandler
+                                    .register(signUpData)
+                                    .then((dynamic message) {
+                                  setState(() {
+                                    errorText = message;
+                                    if(errorText == "User Create successful"){
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Homepage(),
+                                          ));
+                                    }
+                                  });
+                                });
                               },
                             ),
                           ),
@@ -190,28 +200,12 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void registerUser() async {
-    // StreamBuilder(
-    //     stream: FirebaseFirestore.instance
-    //         .collection('YOUR COLLECTION NAME')
-    //         .doc(docId) //ID OF DOCUMENT
-    //         .snapshots(),
-    //     builder: (context, snapshot) {
-    //       if (!snapshot.hasData) {
-    //         return new CircularProgressIndicator();
-    //       }
-    //       var document = snapshot.data;
-    //       return new Text(document["name"]);
-    //     }
-    // );
-
-    // QuerySnapshot querySnapshot ;
-    // var id = querySnapshot.docs[].id;
-    FirebaseFirestore.instance.collection("users").add({
-    "Email": _remailTextEditingController.text.toString(),
-    "Password": _rpasswordTextEditingController.text.toString(),
-    "User_Name": _rusernameTextEditingController.text.toString(),
-    // "Id": FirebaseFirestore.instance.collection("users").doc(docId).id
-    });
-  }
+  // void registerUser() async {
+  //   FirebaseFirestore.instance.collection("users").add({
+  //     "Email": _upemailTextEditingController.text.toString(),
+  //     "Password": _uppasswordTextEditingController.text.toString(),
+  //     "User_Name": _upusernameTextEditingController.text.toString(),
+  //     // "Id": FirebaseFirestore.instance.collection("users").doc(docId).id
+  //   });
+  // }
 }
