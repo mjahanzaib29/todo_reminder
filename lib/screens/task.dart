@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:logger/logger.dart';
+import 'package:todo_reminder/constant/pallete.dart';
 import 'dart:io';
+
+import 'package:todo_reminder/model/networkhandler.dart';
 
 class TaskPage extends StatefulWidget {
   @override
@@ -11,6 +14,7 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  String sometext;
   var log = Logger();
   var scode;
   final String baseurl = "https://rocky-brushlands-19286.herokuapp.com";
@@ -21,29 +25,38 @@ class _TaskPageState extends State<TaskPage> {
   String data;
   var resbody, code;
 
-  Future<String> getSwdata() async {
-    final req = await client.getUrl(Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"));
-    final rspns = await req.close();
-    print(rspns.statusCode);
-    debugPrint(rspns.statusCode.toString());
-    var res = await http.post(Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(query)
-    );
-    setState(() {
-      resbody = json.decode(res.body);
-      code = res.statusCode;
-      print('response from db' + resbody.toString());
-      debugPrint('debugresponse from db' + resbody.toString());
-      log.v('debugresponse from db' + resbody.toString());
-      if (resbody != null) {
-        data = resbody["status"];
-      }
-    });
-    return "Success";
-  }
+  // Future<String> getSwdata() async {
+  //   // final req = await client.getUrl(
+  //   //     Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"));
+  //   // final rspns = await req.close();
+  //   print("future start");
+  //   debugPrint("future start");
+  //   var res = await http.post(
+  //       Uri.parse("https://rocky-brushlands-19286.herokuapp.com/user/login"),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: json.encode({
+  //         'email': 'mohammadnabeeljameel@gmail.com',
+  //         'password': 'asdsasdfsdf',
+  //         'name': 'Nabeel'
+  //       }));
+  //   resbody = json.decode(res.body);
+  //   code = res.statusCode;
+  //   print('response1from db' + resbody.toString());
+  //   debugPrint('debugresponse1 from db' + resbody.toString());
+  //   setState(() {
+  //     resbody = json.decode(res.body);
+  //     code = res.statusCode;
+  //     print('response from db' + resbody.toString());
+  //     debugPrint('debugresponse from db' + resbody.toString());
+  //     log.v('debugresponse from db' + resbody.toString());
+  //     if (resbody != null) {
+  //       data = resbody["status"];
+  //     }
+  //   });
+  //   return "Success";
+  // }
 
   // Future<http.Response> fetchNutritionix() async {
   //   var rescode = await http.get(
@@ -80,7 +93,29 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text(resbody.toString() + code.toString())),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            child: new Text(
+              // "jjbbbknknk",
+          sometext== null ? "button" : sometext,
+
+            ),
+            onPressed: () {
+          try {
+            NetworkHandler().getSwdata().then((String result) {
+              setState(() {
+                result = sometext;
+              });
+            });
+          } catch (e) {
+            Exception exception;
+          }
+            },
+          ),
+        ],
+      ),
     );
   }
 }
