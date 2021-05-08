@@ -34,15 +34,15 @@ class _HomeState extends State<Home> {
       finaldatewithyear = DateFormat('yyyy:MM:dd').format(selectedDate);
     }
     if (selectedTime != null) {
-      // pickedtime = selectedTime.format(context);
-      pickedtime = DateFormat('HH:mm').formatDuration();
+      pickedtime = selectedTime.format(context);
+      // pickedtime = DateFormat('HH:mm').formatDuration();
       // pickedtime = "${selectedTime.hour}:${selectedTime.minute.remainder(60)}";
-      String _printDuration(Duration duration) {
-        String twoDigits(int n) => n.toString().padLeft(2, "0");
-        String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-        String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-        return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-      }
+      // String _printDuration(Duration duration) {
+      //   String twoDigits(int n) => n.toString().padLeft(2, "0");
+      //   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+      //   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+      //   return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+      // }
 
     }
 
