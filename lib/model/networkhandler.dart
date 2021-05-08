@@ -72,7 +72,7 @@ class NetworkHandler {
     }
   }
 
-  Future<NetworkHandler> tasks() async {
+  Future<dynamic> insertTasks(Map<String, String> body) async {
     var url =
     Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/store');
     var response = await http.post(
@@ -81,6 +81,17 @@ class NetworkHandler {
         "Authorization": "Bearer ${MySharedPreferences.instance.getStringValue("token")}",
       },
     );
+    print("Tasktoken");
+    print(await MySharedPreferences.instance.getStringValue("token"));
+    Map output = convert.jsonDecode(response.body);
+    if(response.statusCode == 200 || response.statusCode == 201){
+      if (output['status'] == false) {
+        print(output['error']);
+        return output['error'];
+      }
+      print(response.body + response.statusCode.toString());
+      return output['message'];
+    }
 
   }
 

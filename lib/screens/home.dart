@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_reminder/model/networkhandler.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,24 +12,44 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  NetworkHandler networkHandler = NetworkHandler();
   DateTime now = DateTime.now();
   TimeOfDay timenow = TimeOfDay.now();
-  DateTime selectedDate;
+  DateTime selectedDate,datetime;
   TimeOfDay selectedTime;
-  String finaldatewithyear,pickedtime;
+  String finaldatewithyear, pickedtime;
+  final TextEditingController _currentdatetime = TextEditingController();
+  final TextEditingController _note = TextEditingController();
+  final TextEditingController _selecteddate = TextEditingController();
+  final TextEditingController _selectedtime = TextEditingController();
+  final TextEditingController _category = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+
+
     if (selectedDate != null) {
-      finaldatewithyear = DateFormat('dd:MM:yyyy').format(selectedDate);
+      finaldatewithyear = DateFormat('yyyy:MM:dd').format(selectedDate);
     }
-    if (selectedTime != null){
-      pickedtime =selectedTime.format(context);
+    if (selectedTime != null) {
+      // pickedtime = selectedTime.format(context);
+      pickedtime = DateFormat('HH:mm').formatDuration();
+      // pickedtime = "${selectedTime.hour}:${selectedTime.minute.remainder(60)}";
+      String _printDuration(Duration duration) {
+        String twoDigits(int n) => n.toString().padLeft(2, "0");
+        String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+        String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+        return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+      }
+
     }
 
     // String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
-    String formattedDate = DateFormat('kk:mm:ss \n EEE MMM').format(now);
+    String formattedDate = DateFormat('kk:mm \n EEE MMM').format(now);
+    String currentschedule = DateFormat('dd:MM:yyyy').format(now);
+    _currentdatetime.text = currentschedule;
 
     String currentday = DateFormat('d').format(now);
     String currentdateyear = DateFormat('d MMM').format(now);
@@ -103,6 +124,7 @@ class _HomeState extends State<Home> {
                             height: 10,
                           ),
                           TextField(
+                            controller: _note,
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.notes),
                               labelStyle: Pallete.khint,
@@ -113,6 +135,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Expanded(
                                 child: TextField(
+                                  controller: _selecteddate,
                                   enabled: false,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.calendar_today),
@@ -134,6 +157,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Expanded(
                                 child: TextField(
+                                  controller: _selectedtime,
                                   enabled: false,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.access_time),
@@ -154,6 +178,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Expanded(
                                 child: TextField(
+                                  controller: _category,
                                   enabled: false,
                                   decoration: InputDecoration(
                                       prefixIcon: Icon(Icons.category),
@@ -188,7 +213,16 @@ class _HomeState extends State<Home> {
                                 'Add Task',
                                 style: Pallete.kbtn2,
                               ),
-                              onPressed: () {},
+                              onPressed: () async {
+                                Map<String, String> Taskdata = {
+                                  "currentDate": _selecteddate.text,
+                                  "work": _note.text,
+                                  "reminderTime": _selectedtime.text,
+                                  "categoryId": "38"
+                                };
+                                print(Taskdata);
+                                await networkHandler.insertTasks(Taskdata);
+                              },
                             ),
                           ),
                         ],
@@ -204,7 +238,23 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future pickDateTime(BuildContext context) async{
+    final date = await _selectDate(context);
+    if(date == null )return;
+    final time = await _selectTime(context);
+    if(time == null )return;
+    setState(() {
+      datetime =DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+        time.second
+      );
+    });
+  }
+  Future<DateTime> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
         context: context,
         initialDate: now,
@@ -213,10 +263,11 @@ class _HomeState extends State<Home> {
     if (pickedDate != null && pickedDate != now)
       setState(() {
         selectedDate = pickedDate;
+        return pickedDate;
       });
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<DateTime> _selectTime(BuildContext context) async {
     final TimeOfDay pickedTime = await showTimePicker(
         context: context,
         initialTime: timenow,
