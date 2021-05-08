@@ -15,16 +15,16 @@ class _HomeState extends State<Home> {
   TimeOfDay timenow = TimeOfDay.now();
   DateTime selectedDate;
   TimeOfDay selectedTime;
-  String finaldatewithyear;
+  String finaldatewithyear,pickedtime;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // var now = new DateTime.now();
-    // var formatter = new DateFormat('dd:MM:yyyy');
-    // String formattedDate = formatter.format(now);
     if (selectedDate != null) {
       finaldatewithyear = DateFormat('dd:MM:yyyy').format(selectedDate);
+    }
+    if (selectedTime != null){
+      pickedtime =selectedTime.format(context);
     }
 
     // String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
@@ -138,9 +138,9 @@ class _HomeState extends State<Home> {
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.access_time),
                                     labelStyle: Pallete.khint,
-                                    labelText: finaldatewithyear == null
+                                    labelText: pickedtime == null
                                         ? 'Time'
-                                        : finaldatewithyear,
+                                        : pickedtime,
                                   ),
                                 ),
                               ),

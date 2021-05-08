@@ -2,12 +2,29 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert' as convert;
 
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_reminder/Util/sharedprefs.dart';
 
 class NetworkHandler {
-  var resbody, code,token;
-  SharedPreferences sharedPreferences = SharedPreferences.getInstance() as SharedPreferences;
+  var resbody, code, token,taskres;
+   List taskresponse;
+  Map<String, dynamic> map;
+
+  final String currentDate;
+  final String work;
+  final String reminderTime;
+  final String categoryId;
+
+  NetworkHandler(
+      {this.currentDate, this.work, this.reminderTime, this.categoryId});
+
+  factory NetworkHandler.fromJson(Map<String, dynamic> json){
+    return NetworkHandler(
+        currentDate: json['currentDate'],
+        work: json['work'],
+        reminderTime: json['reminderTime'],
+        categoryId: json['categoryId']
+    );
+  }
 
   // Future<String> loginUser() async {
   //   print("future start");
@@ -32,7 +49,7 @@ class NetworkHandler {
 
   Future loginUser(Map<String, String> body) async {
     var url =
-        Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/login');
+    Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/login');
     var response = await http.post(url, body: body);
     Map output = convert.jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -42,8 +59,10 @@ class NetworkHandler {
       }
 
       print(response.body + response.statusCode.toString());
-      token = sharedPreferences.setString("token", output['token']);
-      print(token);
+      token = output['token'];
+      await MySharedPreferences.instance.setStringValue("token", output['token']);
+      print(MySharedPreferences.instance.getStringValue("token"));
+      print(output['token']);
       return output['token'];
     }
     {
@@ -52,33 +71,23 @@ class NetworkHandler {
       return output['error'];
     }
   }
-  Future<dynamic> tasks() async {
+
+  Future<NetworkHandler> tasks() async {
     var url =
     Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/store');
-    var response = await http.post(url,
-        headers: {'Authorization': 'Bearer $token',},
-         );
-    Map output = convert.jsonDecode(response.body);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      if (output['status'] == false) {
-        print(output['error']);
-        return output['error'];
-      }
+    var response = await http.post(
+      url,
+      headers: {
+        "Authorization": "Bearer ${MySharedPreferences.instance.getStringValue("token")}",
+      },
+    );
 
-      print(response.body + response.statusCode.toString());
-      return output['message'];
-    }
-    {
-      print("statusccod is not 200");
-      print(response.body);
-      return output['error'];
-    }
   }
 
 
   Future<dynamic> register(Map<String, String> body) async {
     var url =
-        Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/signup');
+    Uri.parse('https://rocky-brushlands-19286.herokuapp.com/user/signup');
     var response = await http.post(url, body: body);
     Map output = convert.jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
