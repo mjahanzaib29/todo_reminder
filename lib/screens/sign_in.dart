@@ -10,17 +10,19 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final TextEditingController _semailTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _spasswordTextEditingController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _snameTextEditingController =
-      TextEditingController();
+  TextEditingController();
   String errorText, successText;
 
   @override
   Widget build(BuildContext context) {
     NetworkHandler networkHandler = NetworkHandler();
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -34,7 +36,7 @@ class _SignInState extends State<SignIn> {
                   decoration: BoxDecoration(
                     color: Pallete.bgColor,
                     borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(90.0)),
+                    BorderRadius.vertical(bottom: Radius.circular(90.0)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -77,7 +79,7 @@ class _SignInState extends State<SignIn> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _snameTextEditingController,
                               decoration: InputDecoration(
@@ -95,7 +97,7 @@ class _SignInState extends State<SignIn> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _semailTextEditingController,
                               decoration: InputDecoration(
@@ -111,7 +113,7 @@ class _SignInState extends State<SignIn> {
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom:
-                                        BorderSide(color: Colors.grey[400]))),
+                                    BorderSide(color: Colors.grey[400]))),
                             child: TextField(
                               controller: _spasswordTextEditingController,
                               decoration: InputDecoration(
@@ -129,7 +131,7 @@ class _SignInState extends State<SignIn> {
                             decoration: new BoxDecoration(
                               color: Pallete.bgColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(50.0)),
+                              BorderRadius.all(Radius.circular(50.0)),
                             ),
                             child: TextButton(
                               child: new Text(
@@ -140,7 +142,7 @@ class _SignInState extends State<SignIn> {
                                 Map<String, String> loginData = {
                                   "email": _semailTextEditingController.text,
                                   "password":
-                                      _spasswordTextEditingController.text,
+                                  _spasswordTextEditingController.text,
                                   "name": _snameTextEditingController.text,
                                 };
                                 print(loginData);
@@ -149,13 +151,17 @@ class _SignInState extends State<SignIn> {
                                     .then((dynamic message) {
                                   setState(() {
                                     errorText = message;
-                                    if (errorText != null) {
+                                    if (errorText != null &&
+                                        errorText == "Login Successful") {
+                                      CircularProgressIndicator();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => Homepage(),
                                           ));
-                                    }
+                                    } else ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                         SnackBar(backgroundColor: Colors.red,content: Text("Username or "+errorText)));
                                   });
                                 });
                               },

@@ -14,10 +14,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   NetworkHandler networkHandler = NetworkHandler();
   DateTime now = DateTime.now();
-  TimeOfDay timenow = TimeOfDay.now();
-  DateTime selectedDate,datetime;
-  TimeOfDay selectedTime;
-  String finaldatewithyear, pickedtime;
+  DateTime dateTime;
+  String ReminderTime, CurrentTimeForReminder;
   final TextEditingController _currentdatetime = TextEditingController();
   final TextEditingController _note = TextEditingController();
   final TextEditingController _selecteddate = TextEditingController();
@@ -28,30 +26,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-
-
-    if (selectedDate != null) {
-      finaldatewithyear = DateFormat('yyyy:MM:dd').format(selectedDate);
-    }
-    if (selectedTime != null) {
-      pickedtime = selectedTime.format(context);
-      // pickedtime = DateFormat('HH:mm').formatDuration();
-      // pickedtime = "${selectedTime.hour}:${selectedTime.minute.remainder(60)}";
-      // String _printDuration(Duration duration) {
-      //   String twoDigits(int n) => n.toString().padLeft(2, "0");
-      //   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-      //   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-      //   return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-      // }
-
-    }
-
     // String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
-    String formattedDate = DateFormat('kk:mm \n EEE MMM').format(now);
+    String currentday = DateFormat('d').format(now);
+    String formattedDate =
+        DateFormat('kk:mm \n EEE MMM ').format(now); // 02:43 mon dec
+
     String currentschedule = DateFormat('dd:MM:yyyy').format(now);
     _currentdatetime.text = currentschedule;
 
-    String currentday = DateFormat('d').format(now);
     String currentdateyear = DateFormat('d MMM').format(now);
 
     return Scaffold(
@@ -140,37 +122,19 @@ class _HomeState extends State<Home> {
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.calendar_today),
                                     labelStyle: Pallete.khint,
-                                    labelText: finaldatewithyear == null
-                                        ? 'Schedule'
-                                        : finaldatewithyear,
-                                    // hintText: finaldatewithyear,
+                                    labelText: getDateTime(),
                                   ),
                                 ),
-                              ),
-                              TextButton(
-                                onPressed: () => _selectDate(context),
-                                child: Text('PickDate'),
                               ),
                             ],
                           ),
                           Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  controller: _selectedtime,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.access_time),
-                                    labelStyle: Pallete.khint,
-                                    labelText: pickedtime == null
-                                        ? 'Time'
-                                        : pickedtime,
-                                  ),
+                                child: TextButton(
+                                  onPressed: () => pickDateTime(context),
+                                  child: Text('PickDateTime'),
                                 ),
-                              ),
-                              TextButton(
-                                onPressed: () => _selectTime(context),
-                                child: Text('PickTime'),
                               ),
                             ],
                           ),
@@ -215,9 +179,9 @@ class _HomeState extends State<Home> {
                               ),
                               onPressed: () async {
                                 Map<String, String> Taskdata = {
-                                  "currentDate": _selecteddate.text,
+                                  "currentDate": CurrentTimeForReminder,
                                   "work": _note.text,
-                                  "reminderTime": _selectedtime.text,
+                                  "reminderTime": ReminderTime,
                                   "categoryId": "38"
                                 };
                                 print(Taskdata);
@@ -238,61 +202,104 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future pickDateTime(BuildContext context) async{
-    final date = await _selectDate(context);
-    if(date == null )return;
-    final time = await _selectTime(context);
-    if(time == null )return;
+  String getDateTime() {
+    if (dateTime == null) {
+      return 'Schedule ';
+    } else {
+      setState(() {
+        CurrentTimeForReminder = DateFormat('yyyy-MM-dd').format(dateTime);
+        ReminderTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+      });
+
+      print(ReminderTime + CurrentTimeForReminder);
+      return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+    }
+  }
+
+  Future pickDateTime(BuildContext context) async {
+    final date = await pickDate(context);
+    if (date == null) return;
+
+    final time = await pickTime(context);
+    if (time == null) return;
+
     setState(() {
-      datetime =DateTime(
+      dateTime = DateTime(
         date.year,
         date.month,
         date.day,
         time.hour,
         time.minute,
-        time.second
       );
     });
   }
-  Future<DateTime> _selectDate(BuildContext context) async {
-    final DateTime pickedDate = await showDatePicker(
-        context: context,
-        initialDate: now,
-        firstDate: DateTime(2021),
-        lastDate: DateTime(2050));
-    if (pickedDate != null && pickedDate != now)
-      setState(() {
-        selectedDate = pickedDate;
-        return pickedDate;
-      });
+
+  Future<DateTime> pickDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: dateTime ?? initialDate,
+      firstDate: DateTime(DateTime.now().year),
+      lastDate: DateTime(DateTime.now().year + 5),
+    );
+
+    if (newDate == null) return null;
+
+    return newDate;
   }
 
-  Future<DateTime> _selectTime(BuildContext context) async {
-    final TimeOfDay pickedTime = await showTimePicker(
-        context: context,
-        initialTime: timenow,
-        builder: (BuildContext context, Widget child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child,
-          );
-        });
+  Future<TimeOfDay> pickTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: dateTime != null
+          ? TimeOfDay(hour: dateTime.hour, minute: dateTime.minute)
+          : initialTime,
+    );
 
-    if (pickedTime != null && pickedTime != timenow)
-      setState(() {
-        selectedTime = pickedTime;
-      });
+    if (newTime == null) return null;
+
+    return newTime;
   }
 
-// Widget buildDatePicker() => Container(
-//       height: 180,
-//       child: CupertinoDatePicker(
-//           maximumYear: DateTime.now().year,
-//           minimumYear: 2021,
-//           initialDateTime: now,
-//           mode: CupertinoDatePickerMode.dateAndTime,
-//           onDateTimeChanged: (now) => setState(() {
-//                 this.now = now;
-//               })),
-//     );
+// Future pickDateTime(BuildContext context) async {
+//   final date = await selectDate(context);
+//   if (date == null) return;
+//   final time = await selectTime(context);
+//   if (time == null) return;
+//   setState(() {
+//     datetime = DateTime(
+//         date.year, date.month, date.day, time.hour, time.minute, time.second);
+//   });
+// }
+//
+// Future<DateTime> selectDate(BuildContext context) async {
+//   final DateTime pickedDate = await showDatePicker(
+//       context: context,
+//       initialDate: now,
+//       firstDate: DateTime(2021),
+//       lastDate: DateTime(2050));
+//   if (pickedDate != null && pickedDate != now)
+//     setState(() {
+//       selectedDate = pickedDate;
+//       return pickedDate;
+//     });
+//   return null;
+// }
+//
+// Future<DateTime> selectTime(BuildContext context) async {
+//   final TimeOfDay pickedTime = await showTimePicker(
+//     context: context,
+//     initialTime: datetime != null
+//         ? TimeOfDay(hour: datetime.hour, minute: datetime.minute)
+//         : pickedtime,
+//   );
+//
+//   if (pickedTime != null && pickedTime != timenow)
+//     setState(() {
+//       selectedTime = pickedTime;
+//       return pickedTime;
+//     });
+//   return null;
+// }
 }

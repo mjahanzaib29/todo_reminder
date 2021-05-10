@@ -119,7 +119,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
-                              controller: _uppasswordTextEditingController,
+                              // controller: _uppasswordTextEditingController,
                               decoration: InputDecoration(
                                 helperText: errorText == null ? null:errorText,
                                 prefixIcon: Icon(Icons.lock),
@@ -163,7 +163,9 @@ class _SignUpState extends State<SignUp> {
                                           MaterialPageRoute(
                                             builder: (context) => Homepage(),
                                           ));
-                                    }
+                                    }else ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                        SnackBar(backgroundColor: Colors.red,content: Text(errorText)));
                                   });
                                 });
                               },
