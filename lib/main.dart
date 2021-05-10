@@ -7,10 +7,12 @@ import 'package:todo_reminder/screens/sign_up.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 void main() async {
+  tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
   var initializationSettingsAndroid = AndroidInitializationSettings('circle');
   var initializationSettingsIOS = IOSInitializationSettings(
