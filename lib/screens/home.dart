@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todo_reminder/Util/sharedprefs.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_reminder/main.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
 
 class Home extends StatefulWidget {
@@ -184,6 +186,7 @@ class _HomeState extends State<Home> {
                                   "reminderTime": ReminderTime,
                                   "categoryId": "38"
                                 };
+                                scheduleAlarm();
                                 print(Taskdata);
                                 await networkHandler.insertTasks(Taskdata);
                               },
@@ -211,6 +214,7 @@ class _HomeState extends State<Home> {
         ReminderTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
       });
 
+      MySharedPreferences.instance.setStringValue("remindertime", ReminderTime);
       print(ReminderTime + CurrentTimeForReminder);
       return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
     }
