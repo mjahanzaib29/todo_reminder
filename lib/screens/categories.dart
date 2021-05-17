@@ -56,11 +56,18 @@ class _Categories_pageState extends State<Categories_page> {
                     // itemCount: allcategories.length,
                     itemBuilder: (context, index) {
                       var cat = snapshot.data.todos[index];
-                      return Container(
-                        child: Column(
-                          children: [
-                            Text(cat.name),
-                          ],
+                      return Dismissible(
+                        background: Container(color: Colors.red,),
+                        key: ValueKey(index),
+                        onDismissed: (direction) {
+                          setState(() {
+                            allcategories.removeAt(index);
+                          });
+                        },
+                        child: ListTile(
+                          title: Text(cat.name),
+                          leading: Text("ID: "+cat.id.toString()),
+                          subtitle: Text("Created: "+cat.createdAt.toString()),
                         ),
                       );
                       // final cat = allcategories[index];
