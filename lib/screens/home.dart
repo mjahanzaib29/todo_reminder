@@ -198,7 +198,7 @@ class _HomeState extends State<Home> {
                                   "currentDate": _currentdatetime.text,
                                   "work": _note.text,
                                   "reminderTime": ReminderTime,
-                                  "categoryId": ""
+                                  "categoryId": "102"
                                 };
                                 MySharedPreferences.instance.setStringValue(
                                     "remindertime", ReminderTime);

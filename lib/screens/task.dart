@@ -67,7 +67,7 @@ class _TaskPageState extends State<TaskPage> {
                           title: Text(todoreminder.work),
                           leading: Text("ID: " + todoreminder.id.toString()),
                           subtitle: Text(
-                              "Created: " + todoreminder.createdAt.toString()),
+                              "Created: " + todoreminder.reminderTime.toString()),
                         ),
                       );
                     },
