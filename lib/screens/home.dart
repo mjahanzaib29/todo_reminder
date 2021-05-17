@@ -16,8 +16,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   NetworkHandler networkHandler = NetworkHandler();
   DateTime now = DateTime.now();
+  DateTime now1;
   DateTime dateTime;
-  String ReminderTime, CurrentTimeForReminder;
+  String ReminderTime, CurrentTimeForReminder,currentschedule;
   final TextEditingController _currentdatetime = TextEditingController();
   final TextEditingController _note = TextEditingController();
   final TextEditingController _selecteddate = TextEditingController();
@@ -32,9 +33,7 @@ class _HomeState extends State<Home> {
     String currentday = DateFormat('d').format(now);
     String formattedDate =
         DateFormat('kk:mm \n EEE MMM ').format(now); // 02:43 mon dec
-
-    String currentschedule = DateFormat('dd:MM:yyyy').format(now);
-    _currentdatetime.text = currentschedule;
+    // this is current year:month:day
 
     String currentdateyear = DateFormat('d MMM').format(now);
 
@@ -181,11 +180,15 @@ class _HomeState extends State<Home> {
                               ),
                               onPressed: () async {
                                 Map<String, String> Taskdata = {
-                                  "currentDate": CurrentTimeForReminder,
+                                  "currentDate": _currentdatetime.text,
                                   "work": _note.text,
                                   "reminderTime": ReminderTime,
-                                  "categoryId": "38"
+                                  "categoryId": ""
                                 };
+                                MySharedPreferences.instance.setStringValue(
+                                    "remindertime", ReminderTime);
+                                MySharedPreferences.instance
+                                    .setStringValue("note", _note.text);
                                 scheduleAlarm();
                                 print(Taskdata);
                                 await networkHandler.insertTasks(Taskdata);
@@ -210,13 +213,15 @@ class _HomeState extends State<Home> {
       return 'Schedule ';
     } else {
       setState(() {
-        CurrentTimeForReminder = DateFormat('yyyy-MM-dd').format(dateTime);
-        ReminderTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+        now1 = DateTime.now();
+        currentschedule = DateFormat('yyyy-MM-dd').format(now1);
+        _currentdatetime.text = currentschedule;
+        // CurrentTimeForReminder = DateFormat('yyyy-MM-dd').format(dateTime);
+        ReminderTime = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
       });
 
-      MySharedPreferences.instance.setStringValue("remindertime", ReminderTime);
-      print(ReminderTime + CurrentTimeForReminder);
-      return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+      print(ReminderTime);
+      return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
     }
   }
 
@@ -265,45 +270,4 @@ class _HomeState extends State<Home> {
 
     return newTime;
   }
-
-// Future pickDateTime(BuildContext context) async {
-//   final date = await selectDate(context);
-//   if (date == null) return;
-//   final time = await selectTime(context);
-//   if (time == null) return;
-//   setState(() {
-//     datetime = DateTime(
-//         date.year, date.month, date.day, time.hour, time.minute, time.second);
-//   });
-// }
-//
-// Future<DateTime> selectDate(BuildContext context) async {
-//   final DateTime pickedDate = await showDatePicker(
-//       context: context,
-//       initialDate: now,
-//       firstDate: DateTime(2021),
-//       lastDate: DateTime(2050));
-//   if (pickedDate != null && pickedDate != now)
-//     setState(() {
-//       selectedDate = pickedDate;
-//       return pickedDate;
-//     });
-//   return null;
-// }
-//
-// Future<DateTime> selectTime(BuildContext context) async {
-//   final TimeOfDay pickedTime = await showTimePicker(
-//     context: context,
-//     initialTime: datetime != null
-//         ? TimeOfDay(hour: datetime.hour, minute: datetime.minute)
-//         : pickedtime,
-//   );
-//
-//   if (pickedTime != null && pickedTime != timenow)
-//     setState(() {
-//       selectedTime = pickedTime;
-//       return pickedTime;
-//     });
-//   return null;
-// }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert' as convert;
 
 import 'package:todo_reminder/Util/sharedprefs.dart';
+import 'package:todo_reminder/model/categoryinfo.dart';
 
 class NetworkHandler {
   var resbody, code, token,taskres;
@@ -96,7 +97,45 @@ class NetworkHandler {
     }
 
   }
+  Future<Welcome> getcategory() async {
+    var token = await MySharedPreferences.instance.getStringValue("token");
+    var url =
+    Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/category/list');
+    var result = null;
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+      // print("Tasktoken");
+      // print(await MySharedPreferences.instance.getStringValue("token"));
+      var output = convert.jsonDecode(response.body);
+      print(output);
 
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // if (output['status'] == false) {
+        //   print(output['error']);
+        //   // return output['error'];
+        //   return result;
+        // }
+        result = Welcome.fromJson(output);
+        print("complete output");
+        print(output);
+        print(result);
+        return result;
+        // print(response.body + response.statusCode.toString());
+        // // return output['message'];
+        // return result;
+      }
+    }
+    catch(Exception){
+      return result;
+    }
+    return result;
+
+  }
 
   Future<dynamic> register(Map<String, String> body) async {
     var url =

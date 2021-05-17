@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_reminder/constant/category_constant.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
+import 'package:todo_reminder/model/categoryinfo.dart';
+import 'package:todo_reminder/model/networkhandler.dart';
 
 class Categories_page extends StatefulWidget {
   @override
@@ -9,10 +11,16 @@ class Categories_page extends StatefulWidget {
 }
 
 class _Categories_pageState extends State<Categories_page> {
+  NetworkHandler networkHandler = NetworkHandler();
   CategoryConstant categoryConstant;
+  Future<Welcome> _category;
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      _category = networkHandler.getcategory();
+      print(_category);
+    });
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -39,22 +47,40 @@ class _Categories_pageState extends State<Categories_page> {
         child: Column(
           children: [
             Expanded(
-                child: ListView.builder(
-              itemCount: allcategories.length,
-              itemBuilder: (context, index) {
-                // final cat = allcategories[index];
-                return Dismissible(
-                  background:Container(color: Colors.red,),
-                  key: ValueKey(index),
-                  onDismissed: (direction) {
-                    setState(() {
-                      allcategories.removeAt(index);
-                    });
-                  },
-                  child: ListTile(
-                    title: Text(allcategories[index].catname),
-                  ),
-                );
+                child: FutureBuilder<Welcome>(
+              future: _category,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount:  snapshot.data.todos.length,
+                    // itemCount: allcategories.length,
+                    itemBuilder: (context, index) {
+                      var cat = snapshot.data.todos[index];
+                      return Container(
+                        child: Column(
+                          children: [
+                            Text(cat.name),
+                          ],
+                        ),
+                      );
+                      // final cat = allcategories[index];
+                      // return Dismissible(
+                      //   background: Container(color: Colors.red,),
+                      //   key: ValueKey(index),
+                      //   onDismissed: (direction) {
+                      //     setState(() {
+                      //       allcategories.removeAt(index);
+                      //     });
+                      //   },
+                      //   child: ListTile(
+                      //     title: Text(allcategories[index].catname),
+                      //   ),
+                      // );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
             ))
             // Expanded(
