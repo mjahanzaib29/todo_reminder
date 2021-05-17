@@ -1,101 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:todo_reminder/Util/sharedprefs.dart';
+import 'package:todo_reminder/constant/pallete.dart';
+import 'package:todo_reminder/constant/string_constant.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
-import 'dart:async';
-import 'dart:convert';
+import 'package:todo_reminder/model/todoinfo.dart';
 
 class TaskPage extends StatefulWidget {
+  const TaskPage({Key key}) : super(key: key);
+
   @override
   _TaskPageState createState() => _TaskPageState();
 }
 
 class _TaskPageState extends State<TaskPage> {
-  DateTime dateTime;
-
-  String getText() {
-    if (dateTime == null) {
-      return 'Select DateTime';
-    } else {
-      return DateFormat('MM/dd/yyyy HH:mm').format(dateTime);
-    }
-  }
-
-  //
-  // @override
-  // Widget build(BuildContext context) => ButtonHeaderWidget(
-  //   title: 'DateTime',
-  //   text: getText(),
-  //   onClicked: () => pickDateTime(context),
-  // );
-
-  Future pickDateTime(BuildContext context) async {
-    final date = await pickDate(context);
-    if (date == null) return;
-
-    final time = await pickTime(context);
-    if (time == null) return;
-
-    setState(() {
-      dateTime = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        time.hour,
-        time.minute,
-      );
-    });
-  }
-
-  Future<DateTime> pickDate(BuildContext context) async {
-    final initialDate = DateTime.now();
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: dateTime ?? initialDate,
-      firstDate: DateTime(DateTime.now().year - 5),
-      lastDate: DateTime(DateTime.now().year + 5),
-    );
-
-    if (newDate == null) return null;
-
-    return newDate;
-  }
-
-  Future<TimeOfDay> pickTime(BuildContext context) async {
-    final initialTime = TimeOfDay(hour: 9, minute: 0);
-    final newTime = await showTimePicker(
-      context: context,
-      initialTime: dateTime != null
-          ? TimeOfDay(hour: dateTime.hour, minute: dateTime.minute)
-          : initialTime,
-    );
-
-    if (newTime == null) return null;
-
-    return newTime;
-  }
+  NetworkHandler networkHandler = NetworkHandler();
+  Future<TodoInfo> _alltasks;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Column(children: [
-      Expanded(
-        child: TextField(
-          enabled: false,
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.calendar_today),
-            labelText: getText(),
-            // finaldatewithyear == null
-            //     ? 'Schedule'
-            //     : finaldatewithyear,
-            // hintText: finaldatewithyear,
-          ),
+    setState(() {
+      _alltasks = networkHandler.getTodolist();
+    });
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: Colors.red,
+            ),
+            onPressed: () {}),
+        title: Text(
+          StringConstants.title,
+          style: TextStyle(
+              color: Pallete.bgColor,
+              fontSize: 25,
+              fontWeight: FontWeight.bold),
         ),
       ),
-      TextButton(
-        onPressed: () => pickDateTime(context),
-        child: Text('PickDate'),
-      )
-    ],);
+      body: Align(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Expanded(
+                child: FutureBuilder<TodoInfo>(
+              future: _alltasks,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data.todos.length,
+                    itemBuilder: (context, index) {
+                      var todoreminder = snapshot.data.todos[index];
+                      return Dismissible(
+                        background: Container(
+                          color: Colors.red,
+                        ),
+                        key: ValueKey(index),
+                        onDismissed: (direction) {
+                          setState(() {
+                            snapshot.data.todos.removeAt(index);
+                          });
+                        },
+                        child: ListTile(
+                          title: Text(todoreminder.work),
+                          leading: Text("ID: " + todoreminder.id.toString()),
+                          subtitle: Text(
+                              "Created: " + todoreminder.createdAt.toString()),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ))
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -6,6 +6,7 @@ import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_reminder/main.dart';
+import 'package:todo_reminder/model/categoryinfo.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
 
 class Home extends StatefulWidget {
@@ -18,7 +19,7 @@ class _HomeState extends State<Home> {
   DateTime now = DateTime.now();
   DateTime now1;
   DateTime dateTime;
-  String ReminderTime, CurrentTimeForReminder,currentschedule;
+  String ReminderTime, CurrentTimeForReminder, currentschedule;
   final TextEditingController _currentdatetime = TextEditingController();
   final TextEditingController _note = TextEditingController();
   final TextEditingController _selecteddate = TextEditingController();
@@ -27,6 +28,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    Future<Welcome> _categorylist;
+    setState(() {
+      _categorylist = networkHandler.getcategory();
+    });
     Size size = MediaQuery.of(context).size;
 
     // String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
@@ -151,15 +156,25 @@ class _HomeState extends State<Home> {
                                       labelText: 'Category'),
                                 ),
                               ),
-                              DropdownButton<String>(
-                                items: <String>['A', 'B', 'C', 'D']
-                                    .map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (_) {},
+                              FutureBuilder<Welcome>(
+                                future: _categorylist,
+                                builder: (context, snapshot) {
+                              if(snapshot.hasData){
+                                return DropdownButton<String>(
+                                  items: <String>['A', 'B', 'C', 'D']
+                                      .map((String value) {
+                                    return new DropdownMenuItem<String>(
+                                      value: value,
+                                      child: new Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (_) {},
+                                );
+                              }
+                              else{
+                                return null;
+                              }
+                                },
                               ),
                             ],
                           ),
