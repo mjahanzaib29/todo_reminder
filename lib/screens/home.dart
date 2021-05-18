@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
   DateTime now = DateTime.now();
   DateTime now1;
   DateTime dateTime;
-  String ReminderTime, CurrentTimeForReminder, currentschedule;
+  String ReminderTime, CurrentTimeForReminder, currentschedule,CategoryId;
   final TextEditingController _currentdatetime = TextEditingController();
   final TextEditingController _note = TextEditingController();
   final TextEditingController _selecteddate = TextEditingController();
@@ -28,9 +28,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Future<Welcome> _categorylist;
+    NetworkHandler networkHandler = NetworkHandler();
+    Future<Welcome> _category;
+
     setState(() {
-      _categorylist = networkHandler.getcategory();
+      _category = networkHandler.getcategory();
+      print(_category);
     });
     Size size = MediaQuery.of(context).size;
 
@@ -72,19 +75,19 @@ class _HomeState extends State<Home> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
                   child: Container(
-                    height: size.height * .73,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Pallete.bgColor.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
+                    height: size.height *.73,
+                    // decoration: BoxDecoration(
+                    //   color: Colors.white,
+                    //   borderRadius: BorderRadius.circular(25),
+                    //   boxShadow: [
+                    //     BoxShadow(
+                    //       color: Pallete.bgColor.withOpacity(0.5),
+                    //       spreadRadius: 5,
+                    //       blurRadius: 7,
+                    //       offset: Offset(0, 3), // changes position of shadow
+                    //     ),
+                    //   ],
+                    // ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
@@ -144,38 +147,50 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ),
-                          Row(
+                          Column(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _category,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.category),
-                                      labelStyle: Pallete.khint,
-                                      labelText: 'Category'),
-                                ),
-                              ),
+                              // Expanded(
+                              //   child: TextField(
+                              //     controller: _category,
+                              //     enabled: false,
+                              //     decoration: InputDecoration(
+                              //         prefixIcon: Icon(Icons.category),
+                              //         labelStyle: Pallete.khint,
+                              //         labelText: 'Category'),
+                              //   ),
+                              // ),
+                              Text("Select Categories"),
                               FutureBuilder<Welcome>(
-                                future: _categorylist,
-                                builder: (context, snapshot) {
-                              if(snapshot.hasData){
-                                return DropdownButton<String>(
-                                  items: <String>['A', 'B', 'C', 'D']
-                                      .map((String value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (_) {},
-                                );
-                              }
-                              else{
-                                return null;
-                              }
-                                },
-                              ),
+                                  future: _category,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      var catstring = snapshot.data.todos;
+                                      var catid = snapshot.data.todos.map((e) => e.id);
+                                      return DropdownButton<String>(
+                                        items: catstring.map((value) {
+                                          return new DropdownMenuItem<String>(
+                                            value: catid.toString(),
+                                            child: new Text(value.name),
+                                          );
+                                        }).toList(),
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            CategoryId = newValue;
+                                          });
+                                        },
+                                      );
+
+                                      //   ListView.builder(
+                                      //   itemCount: snapshot.data.todos.length,
+                                      //   itemBuilder: (context, index) {
+                                      //
+                                      //   },
+                                      // );
+                                    } else {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    }
+                                  }),
                             ],
                           ),
                           Container(
@@ -198,7 +213,7 @@ class _HomeState extends State<Home> {
                                   "currentDate": _currentdatetime.text,
                                   "work": _note.text,
                                   "reminderTime": ReminderTime,
-                                  "categoryId": "102"
+                                  "categoryId": CategoryId
                                 };
                                 MySharedPreferences.instance.setStringValue(
                                     "remindertime", ReminderTime);

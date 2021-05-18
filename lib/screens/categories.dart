@@ -53,7 +53,6 @@ class _Categories_pageState extends State<Categories_page> {
                 if (snapshot.hasData) {
                   return ListView.builder(
                     itemCount: snapshot.data.todos.length,
-                    // itemCount: allcategories.length,
                     itemBuilder: (context, index) {
                       var cat = snapshot.data.todos[index];
                       return Dismissible(

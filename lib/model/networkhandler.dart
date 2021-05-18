@@ -99,7 +99,7 @@ class NetworkHandler {
         print("complete output");
         print(output);
         print(result);
-        return result;
+        return result.todos;
       }
     }
     catch(Exception){
