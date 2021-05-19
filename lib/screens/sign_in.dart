@@ -154,7 +154,7 @@ class _SignInState extends State<SignIn> {
                                     errorText = message;
                                     if (errorText != null &&
                                         errorText == "Login Successful") {
-                                      MultiAlarm().getAllAlarm();
+                                      // MultiAlarm().getAllAlarm();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

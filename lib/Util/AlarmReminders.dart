@@ -20,7 +20,7 @@ class MultiAlarm {
             for(var i = 0 ; i<alarmnote.length ; i ++ ) {
               print("loooooop");
               print(alarmnote);
-              scheduleAlarm(alarmnote, alarmtime);
+              // scheduleNotification();
             }
           return;
         }

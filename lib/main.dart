@@ -51,42 +51,90 @@ class MyApp extends StatelessWidget {
   }
 }
 
-void scheduleAlarm(dynamic noter, dynamic time) async {
-  // String remindertime = MySharedPreferences.instance.getStringValue("remindertime").toString();
-  // var schduleNotificationDateTime = DateTime.now().add(Duration(seconds: 10));
-  // var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-  //     "alarm_notif", "alarm_notif", "channel fr alarm",
-  //     icon: 'circle',importance: Importance.high);
-  // var platformChannelSpecifics =
-  //     NotificationDetails(android: androidPlatformChannelSpecifics);
-  //
-  String remindertime, note;
-  try {
-    print("this is note");
-    print(noter);
-
-    remindertime =
-        await MySharedPreferences.instance.getStringValue("remindertime");
-    note = await MySharedPreferences.instance.getStringValue("note");
-    var schduleNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+Future<void> scheduleNotification(String time , String work) async {
+  if (time !=null && work !=null ) {
+    print("this is scheduler");
+    print(time+work);
+    String remindertime = time;
+    String note = work;
+    DateTime dt = DateTime.parse(remindertime);
+    var scheduledNotificationDateTime =
+    dt.add(Duration(seconds: 5));
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        "alarm_id", "$noter", "channel fr alarm",
-        icon: 'circle', importance: Importance.high);
-    var platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    // await flutterLocalNotificationsPlugin
-    //   ..zonedSchedule(
-    //       0,
-    //       'Scheduled at $remindertime',
-    //       '$note',
-    //       // DateTime.now(remindertime).add(const Duration(seconds: 5)),
-    //       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-    //       const NotificationDetails(
-    //           android: AndroidNotificationDetails('your channel id',
-    //               'your channel name', 'your channel description')),
-    //       androidAllowWhileIdle: true,
-    //       uiLocalNotificationDateInterpretation:
-    //       UILocalNotificationDateInterpretation.absoluteTime);
-  } catch (e) {}
+      '$note',
+      '$note',
+      'channel description',
+      icon: 'circle',
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        '$note',
+        '$remindertime',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+  }
+  else{
+    var scheduledNotificationDateTime =
+    DateTime.now().add(Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'sada',
+      'sad',
+      'channel description',
+      icon: 'circle',
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'asda',
+        'sdas',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+  }
 }
+
+// void scheduleAlarm(dynamic noter, dynamic time) async {
+//   // String remindertime = MySharedPreferences.instance.getStringValue("remindertime").toString();
+//   // var schduleNotificationDateTime = DateTime.now().add(Duration(seconds: 10));
+//   // var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//   //     "alarm_notif", "alarm_notif", "channel fr alarm",
+//   //     icon: 'circle',importance: Importance.high);
+//   // var platformChannelSpecifics =
+//   //     NotificationDetails(android: androidPlatformChannelSpecifics);
+//   //
+//   String remindertime, note;
+//   try {
+//     print("this is note");
+//     print(noter);
+//
+//     remindertime =
+//         await MySharedPreferences.instance.getStringValue("remindertime");
+//     note = await MySharedPreferences.instance.getStringValue("note");
+//     var schduleNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//         "alarm_id", "$noter", "channel fr alarm",
+//         icon: 'circle', importance: Importance.high);
+//     var platformChannelSpecifics =
+//         NotificationDetails(android: androidPlatformChannelSpecifics);
+//
+//     // await flutterLocalNotificationsPlugin
+//     //   ..zonedSchedule(
+//     //       0,
+//     //       'Scheduled at $remindertime',
+//     //       '$note',
+//     //       // DateTime.now(remindertime).add(const Duration(seconds: 5)),
+//     //       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+//     //       const NotificationDetails(
+//     //           android: AndroidNotificationDetails('your channel id',
+//     //               'your channel name', 'your channel description')),
+//     //       androidAllowWhileIdle: true,
+//     //       uiLocalNotificationDateInterpretation:
+//     //       UILocalNotificationDateInterpretation.absoluteTime);
+//   } catch (e) {}
+// }

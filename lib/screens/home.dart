@@ -29,16 +29,18 @@ class _HomeState extends State<Home> {
   final TextEditingController _selecteddate = TextEditingController();
   final TextEditingController _selectedtime = TextEditingController();
   final TextEditingController _category = TextEditingController();
+  Future<TodoInfo> alltasks;
 
   @override
   Widget build(BuildContext context) {
     NetworkHandler networkHandler = NetworkHandler();
     Future<Welcome> _category;
-    Future<TodoInfo> _alltasks;
+
+
 
     setState(() {
       _category = networkHandler.getcategoryfordropdown();
-      print(_category);
+      alltasks = networkHandler.getTodolist();
     });
     Size size = MediaQuery.of(context).size;
 
@@ -120,6 +122,9 @@ class _HomeState extends State<Home> {
                             height: 10,
                           ),
                           TextField(
+                            onChanged: (content){
+                              _note.text = content;
+                            },
                             controller: _note,
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.notes),
@@ -212,20 +217,25 @@ class _HomeState extends State<Home> {
                                 print(Taskdata);
                                 if(_currentdatetime.text!= null && _note.text!= null && ReminderTime!= null && selectedCat != null)
                                 {
+                                  scheduleNotification(ReminderTime,_note.text);
                                   await networkHandler.insertTasks(Taskdata);
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(
                                       SnackBar(backgroundColor: Colors.green,content: Text("Reminder Added")));
-                                  Future.delayed(Duration(seconds: 5), () {
-                                    // 5s over, navigate to a new page
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => TaskPage(),
-                                        ));
-                                  });
+                                  // Future.delayed(Duration(seconds: 5), () {
+                                  //   // 5s over, navigate to a new page
+                                  //   Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) => TaskPage(),
+                                  //       ));
+                                  // });
                                 }
                                 else {
+                                  DateTime dt = DateTime.now();
+                                  print("THis is DT");
+                                  print(dt);
+                                  scheduleNotification(null,null);
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(
                                 SnackBar(backgroundColor: Colors.red,content: Text("All Fields need to be filled")));
@@ -247,18 +257,24 @@ class _HomeState extends State<Home> {
     );
   }
 
+  @override
+  void initState() {
+    alltasks = networkHandler.getTodolist();
+    // getAllAlarm();
+    // scheduleNotification();
+    super.initState();
+  }
+
   Future getAllAlarm() async {
     FutureBuilder<TodoInfo>(
-      future:_alltasks,
+      future: alltasks,
       builder:(context, snapshot) {
         if(snapshot.hasData){
           List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
           var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
-          for(var i = 0 ; i<alarmnote.length ; i ++ ) {
-            print("loooooop");
-            print(alarmnote);
-            scheduleAlarm(alarmnote, alarmtime);
-          }
+          print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+          print( alarmnote);
+          // scheduleNotification();
           return;
         }
         else{
