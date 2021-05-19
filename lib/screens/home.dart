@@ -260,7 +260,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     alltasks = networkHandler.getTodolist();
-    // getAllAlarm();
+    getAllAlarm();
     // scheduleNotification();
     super.initState();
   }
@@ -273,7 +273,7 @@ class _HomeState extends State<Home> {
           List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
           var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
           print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-          print( alarmnote);
+          print(alarmnote);
           // scheduleNotification();
           return;
         }
