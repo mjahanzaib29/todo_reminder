@@ -8,25 +8,6 @@ import 'package:todo_reminder/model/todoinfo.dart';
 
 class NetworkHandler {
   var resbody, code, token,taskres;
-   // List taskresponse;
-  // Map<String, dynamic> map;
-
-  // final String currentDate;
-  // final String work;
-  // final String reminderTime;
-  // final String categoryId;
-  //
-  // NetworkHandler(
-  //     {this.currentDate, this.work, this.reminderTime, this.categoryId});
-  //
-  // factory NetworkHandler.fromJson(Map<String, dynamic> json){
-  //   return NetworkHandler(
-  //       currentDate: json['currentDate'],
-  //       work: json['work'],
-  //       reminderTime: json['reminderTime'],
-  //       categoryId: json['categoryId']
-  //   );
-  // }
 
   Future loginUser(Map<String, String> body) async {
     var url =
@@ -54,7 +35,7 @@ class NetworkHandler {
   }
 
   //Add Task Via token auth
-  Future<dynamic> insertTasks(Map<String, String> body) async {
+  Future<dynamic> insertTasks(Map<dynamic, dynamic> body) async {
     var token = await MySharedPreferences.instance.getStringValue("token");
     var url =
     Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/store');
@@ -65,8 +46,8 @@ class NetworkHandler {
       },
       body: body
     );
-    print("Tasktoken");
-    print(await MySharedPreferences.instance.getStringValue("token"));
+    // print("Tasktoken");
+    // print(await MySharedPreferences.instance.getStringValue("token"));
     Map output = convert.jsonDecode(response.body);
     if(response.statusCode == 200 || response.statusCode == 201){
       if (output['status'] == false) {
@@ -80,6 +61,35 @@ class NetworkHandler {
 
   //Fetch Categoris Via token
   Future<Welcome> getcategory() async {
+    var token = await MySharedPreferences.instance.getStringValue("token");
+    var url =
+    Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/category/list');
+    var result = null;
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+      var output = convert.jsonDecode(response.body);
+      print(output);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        result = Welcome.fromJson(output);
+        print("complete output");
+        print(output);
+        print(result);
+        return result;
+      }
+    }
+    catch(Exception){
+      return result;
+    }
+    return result;
+  }
+  //for drpdownlist
+  Future<Welcome> getcategoryfordropdown() async {
     var token = await MySharedPreferences.instance.getStringValue("token");
     var url =
     Uri.parse('https://rocky-brushlands-19286.herokuapp.com/todo/category/list');

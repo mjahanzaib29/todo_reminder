@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_reminder/Util/AlarmReminders.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
 import 'package:todo_reminder/screens/home_page.dart';
@@ -153,7 +154,7 @@ class _SignInState extends State<SignIn> {
                                     errorText = message;
                                     if (errorText != null &&
                                         errorText == "Login Successful") {
-                                      CircularProgressIndicator();
+                                      MultiAlarm().getAllAlarm();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

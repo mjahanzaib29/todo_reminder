@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todo_reminder/Util/AlarmReminders.dart';
 import 'package:todo_reminder/Util/sharedprefs.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
@@ -8,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:todo_reminder/main.dart';
 import 'package:todo_reminder/model/categoryinfo.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
+import 'package:todo_reminder/model/todoinfo.dart';
+import 'package:todo_reminder/screens/task.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,7 +22,8 @@ class _HomeState extends State<Home> {
   DateTime now = DateTime.now();
   DateTime now1;
   DateTime dateTime;
-  String ReminderTime, CurrentTimeForReminder, currentschedule,CategoryId;
+  String ReminderTime, CurrentTimeForReminder, currentschedule, CategoryId;
+  var selectedCat;
   final TextEditingController _currentdatetime = TextEditingController();
   final TextEditingController _note = TextEditingController();
   final TextEditingController _selecteddate = TextEditingController();
@@ -30,9 +34,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     NetworkHandler networkHandler = NetworkHandler();
     Future<Welcome> _category;
+    Future<TodoInfo> _alltasks;
 
     setState(() {
-      _category = networkHandler.getcategory();
+      _category = networkHandler.getcategoryfordropdown();
       print(_category);
     });
     Size size = MediaQuery.of(context).size;
@@ -75,7 +80,7 @@ class _HomeState extends State<Home> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
                   child: Container(
-                    height: size.height *.73,
+                    height: size.height * .73,
                     // decoration: BoxDecoration(
                     //   color: Colors.white,
                     //   borderRadius: BorderRadius.circular(25),
@@ -90,7 +95,7 @@ class _HomeState extends State<Home> {
                     // ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 15),
+                          horizontal: 10, vertical: 15),
                       child: Column(
                         children: [
                           Row(
@@ -135,57 +140,41 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextButton(
-                                  onPressed: () => pickDateTime(context),
-                                  child: Text('PickDateTime'),
-                                ),
+                              TextButton(
+                                onPressed: () => pickDateTime(context),
+                                child: Text('PickDateTime'),
                               ),
                             ],
                           ),
+
                           Column(
                             children: [
-                              // Expanded(
-                              //   child: TextField(
-                              //     controller: _category,
-                              //     enabled: false,
-                              //     decoration: InputDecoration(
-                              //         prefixIcon: Icon(Icons.category),
-                              //         labelStyle: Pallete.khint,
-                              //         labelText: 'Category'),
-                              //   ),
-                              // ),
+                              SizedBox(height: 20,),
                               Text("Select Categories"),
                               FutureBuilder<Welcome>(
                                   future: _category,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       var catstring = snapshot.data.todos;
-                                      var catid = snapshot.data.todos.map((e) => e.id);
+                                      var catid =snapshot.data.todos.map((e) => e.id);
                                       return DropdownButton<String>(
                                         items: catstring.map((value) {
-                                          return new DropdownMenuItem<String>(
-                                            value: catid.toString(),
+                                          return new DropdownMenuItem(
+                                            value: value.id.toString(),
                                             child: new Text(value.name),
                                           );
                                         }).toList(),
-                                        onChanged: (newValue) {
+                                        onChanged: (String newValue) {
                                           setState(() {
                                             CategoryId = newValue;
+                                            if (CategoryId != null) {
+                                              selectedCat = (CategoryId);
+                                            }
                                           });
                                         },
+                                        isExpanded: true,
+                                        value: selectedCat,
                                       );
-
-                                      //   ListView.builder(
-                                      //   itemCount: snapshot.data.todos.length,
-                                      //   itemBuilder: (context, index) {
-                                      //
-                                      //   },
-                                      // );
                                     } else {
                                       return Center(
                                           child: CircularProgressIndicator());
@@ -209,19 +198,39 @@ class _HomeState extends State<Home> {
                                 style: Pallete.kbtn2,
                               ),
                               onPressed: () async {
-                                Map<String, String> Taskdata = {
+                                Map<dynamic, dynamic> Taskdata = {
                                   "currentDate": _currentdatetime.text,
                                   "work": _note.text,
                                   "reminderTime": ReminderTime,
-                                  "categoryId": CategoryId
+                                  "categoryId": selectedCat
                                 };
                                 MySharedPreferences.instance.setStringValue(
                                     "remindertime", ReminderTime);
                                 MySharedPreferences.instance
                                     .setStringValue("note", _note.text);
-                                scheduleAlarm();
+                                // scheduleAlarm();
                                 print(Taskdata);
-                                await networkHandler.insertTasks(Taskdata);
+                                if(_currentdatetime.text!= null && _note.text!= null && ReminderTime!= null && selectedCat != null)
+                                {
+                                  await networkHandler.insertTasks(Taskdata);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                      SnackBar(backgroundColor: Colors.green,content: Text("Reminder Added")));
+                                  Future.delayed(Duration(seconds: 5), () {
+                                    // 5s over, navigate to a new page
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TaskPage(),
+                                        ));
+                                  });
+                                }
+                                else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                SnackBar(backgroundColor: Colors.red,content: Text("All Fields need to be filled")));
+                                }
+
                               },
                             ),
                           ),
@@ -237,6 +246,29 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Future getAllAlarm() async {
+    FutureBuilder<TodoInfo>(
+      future:_alltasks,
+      builder:(context, snapshot) {
+        if(snapshot.hasData){
+          List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
+          var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
+          for(var i = 0 ; i<alarmnote.length ; i ++ ) {
+            print("loooooop");
+            print(alarmnote);
+            scheduleAlarm(alarmnote, alarmtime);
+          }
+          return;
+        }
+        else{
+          print("NODATA ON SNAPSHOT");
+          return null;
+        }
+      },
+    );
+  }
+
 
   String getDateTime() {
     if (dateTime == null) {
@@ -274,11 +306,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<DateTime> pickDate(BuildContext context) async {
-    final initialDate = DateTime.now();
+    final initialDateNow = DateTime.now();
     final newDate = await showDatePicker(
       context: context,
-      initialDate: dateTime ?? initialDate,
-      firstDate: DateTime(DateTime.now().year),
+      initialDate:  initialDateNow,
+      firstDate: initialDateNow.subtract(Duration(days: 0)),
       lastDate: DateTime(DateTime.now().year + 5),
     );
 

@@ -53,21 +53,27 @@ class _TaskPageState extends State<TaskPage> {
                     itemCount: snapshot.data.todos.length,
                     itemBuilder: (context, index) {
                       var todoreminder = snapshot.data.todos[index];
-                      return Dismissible(
-                        background: Container(
-                          color: Colors.red,
-                        ),
-                        key: ValueKey(index),
-                        onDismissed: (direction) {
-                          setState(() {
-                            snapshot.data.todos.removeAt(index);
-                          });
-                        },
-                        child: ListTile(
-                          title: Text(todoreminder.work),
-                          leading: Text("ID: " + todoreminder.id.toString()),
-                          subtitle: Text(
-                              "Created: " + todoreminder.reminderTime.toString()),
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom:
+                                BorderSide(color: Colors.grey[300]))),
+                        child: Dismissible(
+                          background: Container(
+                            color: Colors.red,
+                          ),
+                          key: ValueKey(index),
+                          onDismissed: (direction) {
+                            setState(() {
+                              snapshot.data.todos.removeAt(index);
+                            });
+                          },
+                          child: ListTile(
+                            title: Text(todoreminder.work),
+                            leading: Text("ID: " + todoreminder.id.toString()),
+                            subtitle: Text(
+                                "ReminderTime : " + todoreminder.reminderTime.toString()),
+                          ),
                         ),
                       );
                     },
