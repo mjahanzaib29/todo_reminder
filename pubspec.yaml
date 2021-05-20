@@ -30,8 +30,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.16.1
   google_fonts: ^2.0.0
-  cloud_firestore: ^1.0.7
-  firebase_core: ^1.1.0
+#  cloud_firestore: ^1.0.7
+#  firebase_core: ^1.1.0
   http: ^0.13.3
   logger: ^1.0.0
   shared_preferences: ^2.0.5
