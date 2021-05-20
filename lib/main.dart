@@ -52,9 +52,9 @@ class MyApp extends StatelessWidget {
 }
 
 Future<void> scheduleNotification(String time , String work) async {
-  if (time !=null && work !=null ) {
+  if (time != null && work !=null ) {
     print("this is scheduler");
-    print(time+work);
+    print(work+time);
     String remindertime = time;
     String note = work;
     DateTime dt = DateTime.parse(remindertime);
@@ -72,8 +72,8 @@ Future<void> scheduleNotification(String time , String work) async {
         iOS: iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         0,
-        '$note',
-        '$remindertime',
+        'Reminder for : $note',
+        'at $remindertime',
         scheduledNotificationDateTime,
         platformChannelSpecifics);
   }

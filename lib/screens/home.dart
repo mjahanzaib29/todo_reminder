@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:todo_reminder/Util/AlarmReminders.dart';
 import 'package:todo_reminder/Util/sharedprefs.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
@@ -10,7 +9,6 @@ import 'package:todo_reminder/main.dart';
 import 'package:todo_reminder/model/categoryinfo.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
 import 'package:todo_reminder/model/todoinfo.dart';
-import 'package:todo_reminder/screens/task.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -35,8 +33,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     NetworkHandler networkHandler = NetworkHandler();
     Future<Welcome> _category;
-
-
 
     setState(() {
       _category = networkHandler.getcategoryfordropdown();
@@ -72,219 +68,254 @@ class _HomeState extends State<Home> {
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: Align(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
-                  child: Container(
-                    height: size.height * .73,
-                    // decoration: BoxDecoration(
-                    //   color: Colors.white,
-                    //   borderRadius: BorderRadius.circular(25),
-                    //   boxShadow: [
-                    //     BoxShadow(
-                    //       color: Pallete.bgColor.withOpacity(0.5),
-                    //       spreadRadius: 5,
-                    //       blurRadius: 7,
-                    //       offset: Offset(0, 3), // changes position of shadow
-                    //     ),
-                    //   ],
-                    // ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 15),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              RotatedBox(
-                                quarterTurns: 3,
-                                child: Text(
-                                  currentday,
-                                  style:
-                                      GoogleFonts.dancingScript(fontSize: 45),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2),
+                child: Container(
+                  // height: size.height ,
+                  // decoration: BoxDecoration(
+                  //   color: Colors.white,
+                  //   borderRadius: BorderRadius.circular(25),
+                  //   boxShadow: [
+                  //     BoxShadow(
+                  //       color: Pallete.bgColor.withOpacity(0.5),
+                  //       spreadRadius: 5,
+                  //       blurRadius: 7,
+                  //       offset: Offset(0, 3), // changes position of shadow
+                  //     ),
+                  //   ],
+                  // ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RotatedBox(
+                              quarterTurns: 3,
+                              child: Text(
+                                currentday,
+                                style:
+                                    GoogleFonts.dancingScript(fontSize: 45),
+                              ),
+                            ),
+                            Text(
+                              formattedDate,
+                              style: GoogleFonts.montserrat(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          onChanged: (content) {
+                            _note.text = content;
+                          },
+                          controller: _note,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.notes),
+                            labelStyle: Pallete.khint,
+                            labelText: "Remind me for",
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _selecteddate,
+                                enabled: false,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.calendar_today),
+                                  labelStyle: Pallete.khint,
+                                  labelText: getDateTime(),
                                 ),
                               ),
-                              Text(
-                                formattedDate,
-                                style: GoogleFonts.montserrat(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            onChanged: (content){
-                              _note.text = content;
-                            },
-                            controller: _note,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.notes),
-                              labelStyle: Pallete.khint,
-                              labelText: "Remind me for",
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _selecteddate,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.calendar_today),
-                                    labelStyle: Pallete.khint,
-                                    labelText: getDateTime(),
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () => pickDateTime(context),
-                                child: Text('PickDateTime'),
-                              ),
-                            ],
-                          ),
-
-                          Column(
-                            children: [
-                              SizedBox(height: 20,),
-                              Text("Select Categories"),
-                              FutureBuilder<Welcome>(
-                                  future: _category,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      var catstring = snapshot.data.todos;
-                                      var catid =snapshot.data.todos.map((e) => e.id);
-                                      return DropdownButton<String>(
-                                        items: catstring.map((value) {
-                                          return new DropdownMenuItem(
-                                            value: value.id.toString(),
-                                            child: new Text(value.name),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String newValue) {
-                                          setState(() {
-                                            CategoryId = newValue;
-                                            if (CategoryId != null) {
-                                              selectedCat = (CategoryId);
-                                            }
-                                          });
-                                        },
-                                        isExpanded: true,
-                                        value: selectedCat,
-                                      );
-                                    } else {
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    }
-                                  }),
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 15),
-                            width: size.width,
-                            decoration: new BoxDecoration(
-                              border: Border.all(
-                                color: Pallete.bgColor,
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50.0)),
+                            TextButton(
+                              onPressed: () => pickDateTime(context),
+                              child: Text('PickDateTime'),
                             ),
-                            child: TextButton(
-                              child: new Text(
-                                'Add Task',
-                                style: Pallete.kbtn2,
-                              ),
-                              onPressed: () async {
-                                Map<dynamic, dynamic> Taskdata = {
-                                  "currentDate": _currentdatetime.text,
-                                  "work": _note.text,
-                                  "reminderTime": ReminderTime,
-                                  "categoryId": selectedCat
-                                };
-                                MySharedPreferences.instance.setStringValue(
-                                    "remindertime", ReminderTime);
-                                MySharedPreferences.instance
-                                    .setStringValue("note", _note.text);
-                                // scheduleAlarm();
-                                print(Taskdata);
-                                if(_currentdatetime.text!= null && _note.text!= null && ReminderTime!= null && selectedCat != null)
-                                {
-                                  scheduleNotification(ReminderTime,_note.text);
-                                  await networkHandler.insertTasks(Taskdata);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                      SnackBar(backgroundColor: Colors.green,content: Text("Reminder Added")));
-                                  // Future.delayed(Duration(seconds: 5), () {
-                                  //   // 5s over, navigate to a new page
-                                  //   Navigator.push(
-                                  //       context,
-                                  //       MaterialPageRoute(
-                                  //         builder: (context) => TaskPage(),
-                                  //       ));
-                                  // });
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text("Select Categories"),
+                            FutureBuilder<Welcome>(
+                                future: _category,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    var catstring = snapshot.data.todos;
+                                    var catid =
+                                        snapshot.data.todos.map((e) => e.id);
+                                    return DropdownButton<String>(
+                                      items: catstring.map((value) {
+                                        return new DropdownMenuItem(
+                                          value: value.id.toString(),
+                                          child: new Text(value.name),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          CategoryId = newValue;
+                                          if (CategoryId != null) {
+                                            selectedCat = (CategoryId);
+                                          }
+                                        });
+                                      },
+                                      isExpanded: true,
+                                      value: selectedCat,
+                                    );
+                                  } else {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                }),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            FutureBuilder<TodoInfo>(
+                              future: alltasks,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  List alarmnote = snapshot.data.todos
+                                      .map((e) => e.work)
+                                      .toList();
+                                  List alarmtime = (snapshot.data.todos
+                                      .map((e) => e.reminderTime.toString())).toList();
+                                  // String time = DateFormat('yyyy-MM-dd HH:mm').format(alarmtime);
+                                  print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                                  print(alarmnote);
+                                  var i=0;
+                                  String time;
+                                 for(var item in alarmnote){
+                                   i = ++i % alarmnote.length;
+                                   time = alarmtime[i].toString();
+                                   scheduleNotification(time, item);
+                                 }
+                                  return Container();
+                                } else {
+                                  print("NODATA ON SNAPSHOT");
+                                  return Container();
                                 }
-                                else {
-                                  DateTime dt = DateTime.now();
-                                  print("THis is DT");
-                                  print(dt);
-                                  scheduleNotification(null,null);
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                SnackBar(backgroundColor: Colors.red,content: Text("All Fields need to be filled")));
-                                }
-
                               },
+                            )
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 15),
+                          width: size.width,
+                          decoration: new BoxDecoration(
+                            border: Border.all(
+                              color: Pallete.bgColor,
                             ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50.0)),
                           ),
-                        ],
-                      ),
+                          child: TextButton(
+                            child: new Text(
+                              'Add Task',
+                              style: Pallete.kbtn2,
+                            ),
+                            onPressed: () async {
+                              Map<dynamic, dynamic> Taskdata = {
+                                "currentDate": _currentdatetime.text,
+                                "work": _note.text,
+                                "reminderTime": ReminderTime,
+                                "categoryId": selectedCat
+                              };
+                              MySharedPreferences.instance.setStringValue(
+                                  "remindertime", ReminderTime);
+                              MySharedPreferences.instance
+                                  .setStringValue("note", _note.text);
+                              // scheduleAlarm();
+                              print(Taskdata);
+                              if (_currentdatetime.text != null &&
+                                  _note.text != null &&
+                                  ReminderTime != null &&
+                                  selectedCat != null) {
+                                scheduleNotification(
+                                    ReminderTime, _note.text);
+                                await networkHandler.insertTasks(Taskdata);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text("Reminder Added")));
+                                // Future.delayed(Duration(seconds: 5), () {
+                                //   // 5s over, navigate to a new page
+                                //   Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) => TaskPage(),
+                                //       ));
+                                // });
+                              } else {
+                                DateTime dt = DateTime.now();
+                                print("THis is DT");
+                                print(dt);
+                                scheduleNotification(null, null);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                            "All Fields need to be filled")));
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 
   @override
   void initState() {
-    alltasks = networkHandler.getTodolist();
-    getAllAlarm();
+    // getAllAlarm();
     // scheduleNotification();
     super.initState();
   }
 
-  Future getAllAlarm() async {
-    FutureBuilder<TodoInfo>(
-      future: alltasks,
-      builder:(context, snapshot) {
-        if(snapshot.hasData){
-          List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
-          var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
-          print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-          print(alarmnote);
-          // scheduleNotification();
-          return;
-        }
-        else{
-          print("NODATA ON SNAPSHOT");
-          return null;
-        }
-      },
-    );
-  }
-
+  // Future getAllAlarm() async {
+  //   FutureBuilder<TodoInfo>(
+  //     future: alltasks,
+  //     builder:(context, snapshot) {
+  //       if(snapshot.hasData){
+  //         List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
+  //         var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
+  //         print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  //         print(alarmnote);
+  //         // scheduleNotification();
+  //         return ListView.builder(itemBuilder: (context, index) {
+  //           var aa = alarmnote[index];
+  //           print(aa);
+  //           return Text(aa);
+  //         },);
+  //       }
+  //       else{
+  //         print("NODATA ON SNAPSHOT");
+  //         return null;
+  //       }
+  //     },
+  //   );
+  // }
 
   String getDateTime() {
     if (dateTime == null) {
@@ -325,7 +356,7 @@ class _HomeState extends State<Home> {
     final initialDateNow = DateTime.now();
     final newDate = await showDatePicker(
       context: context,
-      initialDate:  initialDateNow,
+      initialDate: initialDateNow,
       firstDate: initialDateNow.subtract(Duration(days: 0)),
       lastDate: DateTime(DateTime.now().year + 5),
     );
