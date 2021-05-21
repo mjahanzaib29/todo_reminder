@@ -161,9 +161,9 @@ class _SignInState extends State<SignIn> {
                                           MaterialPageRoute(
                                             builder: (context) => Homepage(),
                                           ));
-                                    } else ScaffoldMessenger.of(context)
+                                    } else {ScaffoldMessenger.of(context)
                                         .showSnackBar(
-                                         SnackBar(backgroundColor: Colors.red,content: Text("Username or "+errorText)));
+                                         SnackBar(backgroundColor: Colors.red,content: Text("Username or "+errorText)));}
                                   });
                                 });
                               },
