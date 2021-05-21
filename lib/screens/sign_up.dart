@@ -1,9 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
-import 'package:todo_reminder/screens/home_page.dart';
 import 'package:todo_reminder/screens/sign_in.dart';
 
 class SignUp extends StatefulWidget {
@@ -119,6 +116,7 @@ class _SignUpState extends State<SignUp> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              obscureText: true,
                               controller: _uppasswordTextEditingController,
                               decoration: InputDecoration(
                                 helperText: errorText == null ? null:errorText,

@@ -116,6 +116,7 @@ class _SignInState extends State<SignIn> {
                                     bottom:
                                     BorderSide(color: Colors.grey[400]))),
                             child: TextField(
+                              obscureText: true,
                               controller: _spasswordTextEditingController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),

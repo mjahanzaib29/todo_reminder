@@ -1,14 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:todo_reminder/Util/AlarmReminders.dart';
-import 'package:todo_reminder/Util/sharedprefs.dart';
 import 'package:todo_reminder/constant/pallete.dart';
-import 'package:todo_reminder/screens/home.dart';
 import 'package:todo_reminder/screens/sign_up.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-import 'package:intl/intl.dart';
 
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -32,7 +26,7 @@ void main() async {
       debugPrint('notification payload: ' + payload);
     }
   });
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(MyApp());
 }
 
