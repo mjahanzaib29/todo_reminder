@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,12 +30,27 @@ class _HomeState extends State<Home> {
   final TextEditingController _category = TextEditingController();
   Future<TodoInfo> alltasks;
 
+  FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  @override
+  void initState() {
+    notificationPermission();
+    super.initState();
+  }
+
+  void getToken() async{
+    print("this is token"+await _messaging.getToken());
+  }
+
   @override
   Widget build(BuildContext context) {
     NetworkHandler networkHandler = NetworkHandler();
     Future<Welcome> _category;
+    getToken();
 
-    setState(() {
+    setState((){
+      // String token = await _messaging.getToken(
+      //   // vapidKey: "AAAAQ25nlng:APA91bFZ4w-w6ZWC9awAZ_x9ISI_8KRsppn7f4H6gNX61yQp_lSvnENWq2jxiRTiqerXDf0REJZc4Amx3cm2CexwLYdpHdcYf3Su2UnbIB1Sw_-CCaWT2Ua4_2LOcjg_MWFOcU0QFVN-",
+      // );
       _category = networkHandler.getcategoryfordropdown();
       alltasks = networkHandler.getTodolist();
     });
@@ -45,8 +61,6 @@ class _HomeState extends State<Home> {
     String formattedDate =
         DateFormat('kk:mm \n EEE MMM ').format(now); // 02:43 mon dec
     // this is current year:month:day
-
-    String currentdateyear = DateFormat('d MMM').format(now);
 
     return Scaffold(
       appBar: AppBar(
@@ -202,7 +216,7 @@ class _HomeState extends State<Home> {
                                  for(var item in alarmnote){
                                    i = ++i % alarmnote.length;
                                    time = alarmtime[i].toString();
-                                   scheduleNotification(time, item);
+                                   // scheduleNotification(time, item);
                                  }
                                   return Container();
                                 } else {
@@ -245,8 +259,8 @@ class _HomeState extends State<Home> {
                                   _note.text != null &&
                                   ReminderTime != null &&
                                   selectedCat != null) {
-                                scheduleNotification(
-                                    ReminderTime, _note.text);
+                                // scheduleNotification(
+                                //     ReminderTime, _note.text);
                                 await networkHandler.insertTasks(Taskdata);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -264,7 +278,7 @@ class _HomeState extends State<Home> {
                                 DateTime dt = DateTime.now();
                                 print("THis is DT");
                                 print(dt);
-                                scheduleNotification(null, null);
+                                // scheduleNotification(null, null);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         backgroundColor: Colors.red,
@@ -286,12 +300,22 @@ class _HomeState extends State<Home> {
     );
   }
 
-  @override
-  void initState() {
-    // getAllAlarm();
-    // scheduleNotification();
-    super.initState();
+  void initMessaging(){
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    });
   }
+  void notificationPermission() async {
+  NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+
 
   // Future getAllAlarm() async {
   //   FutureBuilder<TodoInfo>(

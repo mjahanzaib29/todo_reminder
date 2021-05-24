@@ -36,6 +36,8 @@ dependencies:
   logger: ^1.0.0
   shared_preferences: ^2.0.5
   flutter_local_notifications: ^5.0.0+4
+  firebase_core:
+  firebase_messaging: ^10.0.0
 
 dev_dependencies:
   flutter_test:

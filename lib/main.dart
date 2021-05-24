@@ -1,32 +1,38 @@
+import 'dart:convert';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/screens/sign_up.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 void main() async {
   tz.initializeTimeZones();
+  //
+  // var initializationSettingsAndroid = AndroidInitializationSettings('circle');
+  // var initializationSettingsIOS = IOSInitializationSettings(
+  //     requestAlertPermission: true,
+  //     requestBadgePermission: true,
+  //     requestSoundPermission: true,
+  //     onDidReceiveLocalNotification:
+  //         (int id, String title, String body, String payload) async {});
+  // var initializationSettings = InitializationSettings(
+  //     android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+  // await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //     onSelectNotification: (String payload) async {
+  //   if (payload != null) {
+  //     debugPrint('notification payload: ' + payload);
+  //   }
+  // });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   WidgetsFlutterBinding.ensureInitialized();
-  var initializationSettingsAndroid = AndroidInitializationSettings('circle');
-  var initializationSettingsIOS = IOSInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-      onDidReceiveLocalNotification:
-          (int id, String title, String body, String payload) async {});
-  var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-  });
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -45,53 +51,61 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> scheduleNotification(String time , String work) async {
-  if (time != null && work !=null ) {
-    print("this is scheduler");
-    print(work+time);
-    String remindertime = time;
-    String note = work;
-    DateTime dt = DateTime.parse(remindertime);
-    var scheduledNotificationDateTime =
-    dt.add(Duration(seconds: 5));
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      '$note',
-      '$note',
-      'channel description',
-      icon: 'circle',
-    );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'Reminder for : $note',
-        'at $remindertime',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
-  }
-  else{
-    var scheduledNotificationDateTime =
-    DateTime.now().add(Duration(seconds: 5));
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'sada',
-      'sad',
-      'channel description',
-      icon: 'circle',
-    );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'asda',
-        'sdas',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
-  }
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
 }
+
+/// The API endpoint here accepts a raw FCM payload for demonstration purposes.
+// String constructFCMPayload(String token) {
+//   print("This is token");
+//   print(token);
+//   return jsonEncode({
+//     'token': token,
+//   });
+// }
+
+// Future<void> scheduleNotification(String time, String work) async {
+//   if (time != null && work != null) {
+//     print("this is scheduler");
+//     print(work + time);
+//     String remindertime = time;
+//     String note = work;
+//     DateTime dt = DateTime.parse(remindertime);
+//     var scheduledNotificationDateTime = dt.add(Duration(seconds: 5));
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//       '$note',
+//       '$note',
+//       'channel description',
+//       icon: 'circle',
+//     );
+//     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+//     var platformChannelSpecifics = NotificationDetails(
+//         android: androidPlatformChannelSpecifics,
+//         iOS: iOSPlatformChannelSpecifics);
+//     await flutterLocalNotificationsPlugin.schedule(
+//         0,
+//         'Reminder for : $note',
+//         'at $remindertime',
+//         scheduledNotificationDateTime,
+//         platformChannelSpecifics);
+//   } else {
+//     var scheduledNotificationDateTime =
+//         DateTime.now().add(Duration(seconds: 5));
+//     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+//       'sada',
+//       'sad',
+//       'channel description',
+//       icon: 'circle',
+//     );
+//     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+//     var platformChannelSpecifics = NotificationDetails(
+//         android: androidPlatformChannelSpecifics,
+//         iOS: iOSPlatformChannelSpecifics);
+//     await flutterLocalNotificationsPlugin.schedule(0, 'asda', 'sdas',
+//         scheduledNotificationDateTime, platformChannelSpecifics);
+//   }
+// }
 
 // void scheduleAlarm(dynamic noter, dynamic time) async {
 //   // String remindertime = MySharedPreferences.instance.getStringValue("remindertime").toString();
