@@ -11,18 +11,34 @@ class Categories_page extends StatefulWidget {
 }
 
 class _Categories_pageState extends State<Categories_page> {
+  final TextEditingController _addcategoryname = TextEditingController();
   NetworkHandler networkHandler = NetworkHandler();
   CategoryConstant categoryConstant;
   Future<Welcome> _category;
+  String codeDialog;
+  String valueText, CatresponseMsg;
+  var categoryAdd;
 
   @override
   Widget build(BuildContext context) {
+    NetworkHandler networkHandler = NetworkHandler();
     setState(() {
       _category = networkHandler.getcategory();
       print(_category);
     });
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        child: new Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        backgroundColor: Pallete.bgColor,
+        onPressed: () {
+          _displayCatAddDialog(context);
+        },
+      ),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -33,7 +49,9 @@ class _Categories_pageState extends State<Categories_page> {
               Icons.logout,
               color: Colors.red,
             ),
-            onPressed: () {}),
+            onPressed: () {
+              _displayCatAddDialog(context);
+            }),
         title: Text(
           StringConstants.title,
           style: TextStyle(
@@ -83,5 +101,71 @@ class _Categories_pageState extends State<Categories_page> {
         ),
       ),
     );
+  }
+
+  Future<void> _displayCatAddDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Add Category '),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _addcategoryname,
+              decoration: InputDecoration(hintText: "Name"),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: Text('CANCEL'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              FlatButton(
+                color: Pallete.bgColor,
+                textColor: Colors.white,
+                child: Text('ADD'),
+                onPressed: () {
+                  setState(() {
+                    codeDialog = valueText;
+                    Navigator.pop(context);
+                  });
+                  Catadd();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void Catadd() async {
+    if (codeDialog != null) {
+      Map<String, String> CatInsert = {
+        "category": codeDialog,
+      };
+      categoryAdd =
+          await networkHandler.addCategory(CatInsert).then((dynamic message) {
+        setState(() {
+          CatresponseMsg = message;
+          if (CatresponseMsg == "failed") {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: Colors.red,
+                content: Text("Category Error" + CatresponseMsg)));
+          }else {ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.red,
+              content: Text("Category Success" + CatresponseMsg)));}
+        });
+      });
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

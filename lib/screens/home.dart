@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
   final TextEditingController _selectedtime = TextEditingController();
   final TextEditingController _category = TextEditingController();
   Future<TodoInfo> alltasks;
+  var tokenupdate;
 
   FirebaseMessaging _messaging = FirebaseMessaging.instance;
   @override
@@ -38,7 +39,12 @@ class _HomeState extends State<Home> {
   }
 
   void getToken() async{
-    print("this is token"+await _messaging.getToken());
+    var fetchedtoken = await _messaging.getToken();
+    print("this is token  "+await _messaging.getToken());
+    Map<String, String> token = {
+      "token": fetchedtoken,
+    };
+    tokenupdate = networkHandler.FCMToken(token);
   }
 
   @override
