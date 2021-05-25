@@ -1,9 +1,12 @@
-# Todo Reminder
+# :stopwatch: Todo Reminder
 
 It's a quick, simple and easy to use reminder app
 
-## Getting Started
-FCM(Firebase Cloud Messaging) is used for Notifications
+## :dart: Getting Started
+:heavy_check_mark: Login
+:heavy_check_mark: Register
+:heavy_check_mark: Add Note and set reminder
+:heavy_check_mark: FCM(Firebase Cloud Messaging) is used for Notifications
 
 ## Usage
 
