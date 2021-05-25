@@ -1,10 +1,9 @@
-# todo_reminder
+# Todo Reminder
 
-Todo reminder application
+It's a quick, simple and easy to use reminder app
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
+FCM(Firebase Cloud Messaging) is used for Notifications
 
 ## Usage
 
@@ -17,14 +16,20 @@ This project is a starting point for a Flutter application.
   firebase_core:
   firebase_messaging: ^10.0.0
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+## Resources
+[Cupertino](https://pub.dev/packages/cupertino_icons)
+[Intl](https://pub.dev/packages/intl)
+[Google Fonts](https://pub.dev/packages/google_fonts)
+[Http](https://pub.dev/packages/http)
+[Shared Preference](https://pub.dev/packages/shared_preferences)
+[Firebase Core](https://pub.dev/packages/firebase_core)
+[Firebase Messaging](https://pub.dev/packages/firebase_messaging
+)
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [CodeLab](https://flutter.dev/docs/get-started/codelab)
+- [Cookbook](https://flutter.dev/docs/cookbook)
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
