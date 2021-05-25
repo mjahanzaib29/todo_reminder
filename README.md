@@ -17,14 +17,14 @@ FCM(Firebase Cloud Messaging) is used for Notifications
   firebase_messaging: ^10.0.0
 
 ## Resources
+
 [Cupertino](https://pub.dev/packages/cupertino_icons)
 [Intl](https://pub.dev/packages/intl)
 [Google Fonts](https://pub.dev/packages/google_fonts)
 [Http](https://pub.dev/packages/http)
 [Shared Preference](https://pub.dev/packages/shared_preferences)
 [Firebase Core](https://pub.dev/packages/firebase_core)
-[Firebase Messaging](https://pub.dev/packages/firebase_messaging
-)
+[Firebase Messaging](https://pub.dev/packages/firebase_messaging)
 
 A few resources to get you started if this is your first Flutter project:
 
