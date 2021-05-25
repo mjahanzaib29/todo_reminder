@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "289615091320",
-    "project_id": "reminder-30fd6",
-    "storage_bucket": "reminder-30fd6.appspot.com"
+    "project_number": "63001478658",
+    "project_id": "todo-app224",
+    "storage_bucket": "todo-app224.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:289615091320:android:1cb7c2a7933c33a3d87f8d",
+        "mobilesdk_app_id": "1:63001478658:android:db04a5310fa86bdbe8091b",
         "android_client_info": {
           "package_name": "com.example.todo_reminder"
         }
       },
       "oauth_client": [
         {
-          "client_id": "289615091320-8jad56n2oml1nbhjcuvpcjbk84qtk3ho.apps.googleusercontent.com",
+          "client_id": "63001478658-ste9mdgnis44jeofhaej85j2o9p9s9l1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCuAhBr40wXmmrIx557TsHuD5oDWaMNeh8"
+          "current_key": "AIzaSyCJEVkzdGtSKzy29V1NrdBCwhTF60nqe5s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "289615091320-8jad56n2oml1nbhjcuvpcjbk84qtk3ho.apps.googleusercontent.com",
+              "client_id": "63001478658-ste9mdgnis44jeofhaej85j2o9p9s9l1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
