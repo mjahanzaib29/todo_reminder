@@ -15,6 +15,7 @@ FCM(Firebase Cloud Messaging) is used for Notifications
   shared_preferences: ^2.0.5
   firebase_core:
   firebase_messaging: ^10.0.0
+```
 
 ## Resources
 
