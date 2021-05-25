@@ -6,7 +6,6 @@ import 'package:todo_reminder/Util/sharedprefs.dart';
 import 'package:todo_reminder/constant/pallete.dart';
 import 'package:todo_reminder/constant/string_constant.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_reminder/main.dart';
 import 'package:todo_reminder/model/categoryinfo.dart';
 import 'package:todo_reminder/model/networkhandler.dart';
 import 'package:todo_reminder/model/todoinfo.dart';
@@ -32,15 +31,16 @@ class _HomeState extends State<Home> {
   var tokenupdate;
 
   FirebaseMessaging _messaging = FirebaseMessaging.instance;
+
   @override
   void initState() {
     notificationPermission();
     super.initState();
   }
 
-  void getToken() async{
+  void getToken() async {
     var fetchedtoken = await _messaging.getToken();
-    print("this is token  "+await _messaging.getToken());
+    print("this is token  " + await _messaging.getToken());
     Map<String, String> token = {
       "token": fetchedtoken,
     };
@@ -53,10 +53,7 @@ class _HomeState extends State<Home> {
     Future<Welcome> _category;
     getToken();
 
-    setState((){
-      // String token = await _messaging.getToken(
-      //   // vapidKey: "AAAAQ25nlng:APA91bFZ4w-w6ZWC9awAZ_x9ISI_8KRsppn7f4H6gNX61yQp_lSvnENWq2jxiRTiqerXDf0REJZc4Amx3cm2CexwLYdpHdcYf3Su2UnbIB1Sw_-CCaWT2Ua4_2LOcjg_MWFOcU0QFVN-",
-      // );
+    setState(() {
       _category = networkHandler.getcategoryfordropdown();
       alltasks = networkHandler.getTodolist();
     });
@@ -122,8 +119,7 @@ class _HomeState extends State<Home> {
                               quarterTurns: 3,
                               child: Text(
                                 currentday,
-                                style:
-                                    GoogleFonts.dancingScript(fontSize: 45),
+                                style: GoogleFonts.dancingScript(fontSize: 45),
                               ),
                             ),
                             Text(
@@ -212,18 +208,20 @@ class _HomeState extends State<Home> {
                                   List alarmnote = snapshot.data.todos
                                       .map((e) => e.work)
                                       .toList();
-                                  List alarmtime = (snapshot.data.todos
-                                      .map((e) => e.reminderTime.toString())).toList();
+                                  List alarmtime = (snapshot.data.todos.map(
+                                          (e) => e.reminderTime.toString()))
+                                      .toList();
                                   // String time = DateFormat('yyyy-MM-dd HH:mm').format(alarmtime);
-                                  print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                                  print(
+                                      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                                   print(alarmnote);
-                                  var i=0;
+                                  var i = 0;
                                   String time;
-                                 for(var item in alarmnote){
-                                   i = ++i % alarmnote.length;
-                                   time = alarmtime[i].toString();
-                                   // scheduleNotification(time, item);
-                                 }
+                                  for (var item in alarmnote) {
+                                    i = ++i % alarmnote.length;
+                                    time = alarmtime[i].toString();
+                                    // scheduleNotification(time, item);
+                                  }
                                   return Container();
                                 } else {
                                   print("NODATA ON SNAPSHOT");
@@ -255,8 +253,8 @@ class _HomeState extends State<Home> {
                                 "reminderTime": ReminderTime,
                                 "categoryId": selectedCat
                               };
-                              MySharedPreferences.instance.setStringValue(
-                                  "remindertime", ReminderTime);
+                              MySharedPreferences.instance
+                                  .setStringValue("remindertime", ReminderTime);
                               MySharedPreferences.instance
                                   .setStringValue("note", _note.text);
                               // scheduleAlarm();
@@ -284,7 +282,6 @@ class _HomeState extends State<Home> {
                                 DateTime dt = DateTime.now();
                                 print("THis is DT");
                                 print(dt);
-                                // scheduleNotification(null, null);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         backgroundColor: Colors.red,
@@ -306,12 +303,12 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void initMessaging(){
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    });
+  void initMessaging() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {});
   }
+
   void notificationPermission() async {
-  NotificationSettings settings = await _messaging.requestPermission(
+    NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -321,31 +318,6 @@ class _HomeState extends State<Home> {
       sound: true,
     );
   }
-
-
-  // Future getAllAlarm() async {
-  //   FutureBuilder<TodoInfo>(
-  //     future: alltasks,
-  //     builder:(context, snapshot) {
-  //       if(snapshot.hasData){
-  //         List alarmnote = snapshot.data.todos.map((e) => e.work).toList();
-  //         var alarmtime = snapshot.data.todos.map((e) => e.reminderTime);
-  //         print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-  //         print(alarmnote);
-  //         // scheduleNotification();
-  //         return ListView.builder(itemBuilder: (context, index) {
-  //           var aa = alarmnote[index];
-  //           print(aa);
-  //           return Text(aa);
-  //         },);
-  //       }
-  //       else{
-  //         print("NODATA ON SNAPSHOT");
-  //         return null;
-  //       }
-  //     },
-  //   );
-  // }
 
   String getDateTime() {
     if (dateTime == null) {
