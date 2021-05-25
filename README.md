@@ -8,7 +8,7 @@ It's a quick, simple and easy to use reminder app
 :heavy_check_mark: Add Note and set reminder\
 :heavy_check_mark: FCM(Firebase Cloud Messaging) is used for Notifications
 
-## Usage
+## :page_facing_up:	Usage
 
 ```Plugins
   cupertino_icons: ^1.0.2
