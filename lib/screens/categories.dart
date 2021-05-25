@@ -149,18 +149,18 @@ class _Categories_pageState extends State<Categories_page> {
   void Catadd() async {
     if (codeDialog != null) {
       Map<String, String> CatInsert = {
-        "category": codeDialog,
+        "name": codeDialog,
       };
       categoryAdd =
           await networkHandler.addCategory(CatInsert).then((dynamic message) {
         setState(() {
           CatresponseMsg = message;
-          if (CatresponseMsg == "failed") {
+          if (CatresponseMsg == "The name field is required.") {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.red,
-                content: Text("Category Error" + CatresponseMsg)));
+                content: Text("Please Insert a name")));
           }else {ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.red,
+              backgroundColor: Pallete.bgColor,
               content: Text("Category Success" + CatresponseMsg)));}
         });
       });
